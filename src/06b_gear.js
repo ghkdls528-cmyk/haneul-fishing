@@ -21,7 +21,7 @@ function startClutch(){fg.clutchUsed=true;fg.clutch=1;fg.cT0=clNow()+.45;fg.cMis
 function clPhase(){return (clNow()-fg.cT0)/CL_PER}
 function clutchTick(dt){fg.ten=Math.max(96,fg.ten-dt*2);const ph=clPhase();if(ph>=1+CL_WIN/CL_PER){fg.cMiss++;if(fg.cMiss>=CL_TRIES){fg.clutch=0;fail('아깝다! 링을 놓쳤어요 · '+snapMsg(),'snap');return}fg.cT0=clNow()+.35;fg.cFb={t:clNow(),k:'late'};SFX.warn()}}
 function clutchTap(){const ph=clPhase();if(ph<0)return;const d=Math.abs(ph-1)*CL_PER,win=CL_WIN+(save.up.hook||0)*.01;
- if(d<=win){fg.clutch=0;fg.ten=45;fg.over=0;setTimeout(hint,0);fg.hp=Math.max(1,fg.hp-10);fg.cWin=1;fg.cFb={t:clNow(),k:'ok'};SFX.finish();bigText(d<win*.4?'완벽한 역전!!':'역전!!','줄이 버텨냈어요','#7fff9a');sparkle(fg.fx,fg.fy,40,['#7fff9a','#fff','#ffe066']);flash=.6;flashCol='120,255,160';vib([20,30,60]);slowmo=.6;save.st.clutch=(save.st.clutch||0)+1;return}
+ if(d<=win){fg.clutch=0;fg.ten=45;fg.over=0;setTimeout(hint,0);fg.hp=Math.max(1,fg.hp-10);fg.cWin=1;fg.cFb={t:clNow(),k:'ok'};(SFX.clutchOk||SFX.finish)();bigText(d<win*.4?'완벽한 역전!!':'역전!!','줄이 버텨냈어요','#7fff9a');sparkle(fg.fx,fg.fy,40,['#7fff9a','#fff','#ffe066']);flash=.6;flashCol='120,255,160';vib([20,30,60]);slowmo=.6;save.st.clutch=(save.st.clutch||0)+1;return}
  fg.cMiss++;fg.cFb={t:clNow(),k:ph<1?'early':'late'};
  if(fg.cMiss>=CL_TRIES){fg.clutch=0;fail((ph<1?'조금 빨랐어요! ':'조금 늦었어요! ')+snapMsg(),'snap');return}
  fg.cT0=clNow()+.35;SFX.fail&&SFX.fail();vib(30)}

@@ -12,9 +12,9 @@ function fxHook(j){const calm=save.set.calm;
   bigText(perfStreak>1?`PERFECT ×${perfStreak}`:'PERFECT!','완벽한 챔질',['#fff36a','#ffd23f','#ffb04a','#ff8ad8'][k-1]);
   flash=Math.max(flash,.25+.08*k);flashCol='255,250,210';if(!calm)shake=Math.max(shake,2+k);
   sparkle(bob.x,G().surf,10+k*6,['#fff36a','#fff','#ffd23f']);
-  tone(1568,.06,'square',.08);tone(2093,.09,'triangle',.1,0,.04);vib(25);toast('PERFECT 챔질! ✨',700)}
+  vib(25);toast('PERFECT 챔질! ✨',700)}
  else{perfStreak=0;
-  if(j==='GREAT'){sparkle(bob.x,G().surf,8,['#bfefff','#fff']);tone(1320,.08,'triangle',.08);toast('GREAT 챔질!',650)}
+  if(j==='GREAT'){sparkle(bob.x,G().surf,8,['#bfefff','#fff']);toast('GREAT 챔질!',650)}
   else if(j==='GOOD')toast('GOOD',500)}}
 const _dn414=down;down=function(px,py){const wasBite=S==='bite',t=T;_dn414(px,py);if(wasBite&&S==='hook'){fg.hj=hookJudge(t);fg.hjT=t;fxHook(fg.hj)}};
 

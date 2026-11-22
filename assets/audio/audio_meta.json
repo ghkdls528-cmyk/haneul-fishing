@@ -1,0 +1,182 @@
+{
+ "sfx_01_button": {
+  "samples": 5292,
+  "sr": 44100,
+  "sec": 0.12,
+  "loop": false,
+  "mp3": 1881
+ },
+ "sfx_02_menu_open": {
+  "samples": 18522,
+  "sr": 44100,
+  "sec": 0.42,
+  "loop": false,
+  "mp3": 5642
+ },
+ "sfx_03_menu_close": {
+  "samples": 13230,
+  "sr": 44100,
+  "sec": 0.3,
+  "loop": false,
+  "mp3": 4075
+ },
+ "sfx_04_gold": {
+  "samples": 26460,
+  "sr": 44100,
+  "sec": 0.6,
+  "loop": false,
+  "mp3": 7523
+ },
+ "sfx_05_cast_charge": {
+  "samples": 44100,
+  "sr": 44100,
+  "sec": 1.0,
+  "loop": true,
+  "mp3": 12539
+ },
+ "sfx_06_cast_throw": {
+  "samples": 14699,
+  "sr": 44100,
+  "sec": 0.333,
+  "loop": false,
+  "mp3": 4389
+ },
+ "sfx_07_float_splash": {
+  "samples": 19845,
+  "sr": 44100,
+  "sec": 0.45,
+  "loop": false,
+  "mp3": 5956
+ },
+ "sfx_08_bite": {
+  "samples": 15435,
+  "sr": 44100,
+  "sec": 0.35,
+  "loop": false,
+  "mp3": 4702
+ },
+ "sfx_09_hook_success": {
+  "samples": 13230,
+  "sr": 44100,
+  "sec": 0.3,
+  "loop": false,
+  "mp3": 4075
+ },
+ "sfx_10_perfect_hook": {
+  "samples": 26460,
+  "sr": 44100,
+  "sec": 0.6,
+  "loop": false,
+  "mp3": 7523
+ },
+ "sfx_11_reel": {
+  "samples": 22050,
+  "sr": 44100,
+  "sec": 0.5,
+  "loop": true,
+  "mp3": 6583
+ },
+ "sfx_12_fish_resistance": {
+  "samples": 26460,
+  "sr": 44100,
+  "sec": 0.6,
+  "loop": false,
+  "mp3": 7523
+ },
+ "sfx_13_line_warning": {
+  "samples": 11466,
+  "sr": 44100,
+  "sec": 0.26,
+  "loop": false,
+  "mp3": 3448
+ },
+ "sfx_14_crisis_success": {
+  "samples": 26460,
+  "sr": 44100,
+  "sec": 0.6,
+  "loop": false,
+  "mp3": 7523
+ },
+ "sfx_15_critical": {
+  "samples": 32958,
+  "sr": 44100,
+  "sec": 0.747,
+  "loop": false,
+  "mp3": 9404
+ },
+ "sfx_16_finisher": {
+  "samples": 44100,
+  "sr": 44100,
+  "sec": 1.0,
+  "loop": false,
+  "mp3": 12539
+ },
+ "sfx_17_fish_caught": {
+  "samples": 26460,
+  "sr": 44100,
+  "sec": 0.6,
+  "loop": false,
+  "mp3": 7523
+ },
+ "sfx_18_rare_fish": {
+  "samples": 52920,
+  "sr": 44100,
+  "sec": 1.2,
+  "loop": false,
+  "mp3": 14733
+ },
+ "sfx_19_treasure_found": {
+  "samples": 52920,
+  "sr": 44100,
+  "sec": 1.2,
+  "loop": false,
+  "mp3": 14733
+ },
+ "sfx_20_legendary_treasure": {
+  "samples": 79380,
+  "sr": 44100,
+  "sec": 1.8,
+  "loop": false,
+  "mp3": 21943
+ },
+ "bgm_01_yosu_morning": {
+  "samples": 3386880,
+  "sr": 44100,
+  "sec": 76.8,
+  "bpm": 100,
+  "bars": 32,
+  "mp3": 768600
+ },
+ "bgm_02_sunset_sea": {
+  "samples": 3024000,
+  "sr": 44100,
+  "sec": 68.57,
+  "bpm": 84,
+  "bars": 24,
+  "mp3": 686160
+ },
+ "bgm_03_moonlight_fishing": {
+  "samples": 2940000,
+  "sr": 44100,
+  "sec": 66.67,
+  "bpm": 72,
+  "bars": 20,
+  "mp3": 667080
+ },
+ "bgm_04_deep_sea_adventure": {
+  "samples": 3175200,
+  "sr": 44100,
+  "sec": 72.0,
+  "bpm": 100,
+  "bars": 30,
+  "mp3": 720360
+ },
+ "bgm_05_treasure_discovery": {
+  "samples": 3136000,
+  "sr": 44100,
+  "sec": 71.11,
+  "bpm": 108,
+  "bars": 32,
+  "mp3": 711720
+ }
+}
