@@ -14,10 +14,16 @@ async def main():
         await pg.evaluate("__t.force('mackerel')");await pg.evaluate('__cast(500)');await pg.evaluate('__bot(60000)');await pg.wait_for_timeout(900);await pg.click('#bNext');await pg.wait_for_timeout(800)
         v=await pg.evaluate('clearInterval(__iv),__op');flips=sum(1 for a,c in zip(v,v[1:]) if a!=c);chk('상태 칩: 한 번 낚는 동안 2번 이하로만 바뀜',flips<=2,str(flips))
         # 2) 알림이 떠 있을 때 던져도 다시 깜빡이지 않음(한 번 사라지면 다시 안 나타남)
-        await pg.evaluate("window.__no=[];__w.notice('👑 테스트 알림');window.__iv=setInterval(()=>__no.push(+getComputedStyle(document.getElementById('notice')).opacity),50)");await pg.wait_for_timeout(700)
+        await pg.evaluate("window.__no=[];__w.notice('👑 테스트 알림');window.__iv=setInterval(()=>{const e=document.getElementById('notice');__no.push([+getComputedStyle(e).opacity,e.textContent])},50)");await pg.wait_for_timeout(700)
         await pg.evaluate("__t.force('mackerel')");await pg.evaluate('__cast(500)');await pg.evaluate('__bot(60000)');await pg.wait_for_timeout(400)
-        n=await pg.evaluate('clearInterval(__iv),__no');vis=[x>.5 for x in n];ups=sum(1 for a,c in zip(vis,vis[1:]) if (not a) and c)
-        chk('알림: 다시 나타나는 깜빡임 없음',ups<=1,f'up-flips {ups}');await pg.wait_for_timeout(700);await pg.click('#bNext');await pg.wait_for_timeout(500)
+        n=await pg.evaluate('clearInterval(__iv),__no')
+        # 같은 알림(같은 글자)이 사라졌다가 다시 나타난 횟수만 셈 — 다른 알림이 이어서 나오는 건 정상
+        ups={};prev=False
+        for o,t in n:
+            v=o>.5
+            if v and not prev:ups[t]=ups.get(t,0)+1
+            prev=v
+        chk('알림: 같은 알림이 다시 나타나는 깜빡임 없음',all(c<=1 for c in ups.values()),str(ups));await pg.wait_for_timeout(700);await pg.click('#bNext');await pg.wait_for_timeout(500)
         # 3) 물속 친구: 짧게 탭하면 던지지 않고 반응 / 꾹 누르면 던짐
         async def fish_pos():
             for _ in range(40):
@@ -42,3 +48,15 @@ async def main():
         await b.close()
     print('PASS',len(ok),'FAIL',len(bad),bad)
 asyncio.run(main())
+
+# 4.16.1: 희귀 기운·선물상자·오늘의 대어 칩이 대기 화면에서 반복 깜빡이지 않음
+async def chips():
+    async with async_playwright() as p:
+        b=await p.chromium.launch(**LAUNCH);pg=await b.new_page(viewport={'width':390,'height':844});errs=[];pg.on('pageerror',lambda e:errs.append(str(e)))
+        await pg.goto(GAME+'?test');await pg.evaluate('localStorage.clear()');await pg.reload();await pg.wait_for_timeout(500)
+        await pg.evaluate("(()=>{const s=__t.save();s.dry=15;s.luck=4;__t.persist()})()");await pg.reload();await pg.wait_for_timeout(500);await pg.click('#bStart');await pg.wait_for_timeout(1200)
+        await pg.evaluate("window.__a=0;document.getElementById('banners').addEventListener('animationstart',()=>__a++)");await pg.wait_for_timeout(5000)
+        a=await pg.evaluate('__a');txt=await pg.evaluate("document.getElementById('banners').textContent")
+        print(('OK  ' if a==0 and '희귀 기운' in txt and '4/8' in txt else 'BAD ')+'상태 칩: 대기 화면 5초 동안 등장 애니메이션 반복 없음',a,txt)
+        print('errs',errs);await b.close()
+asyncio.run(chips())

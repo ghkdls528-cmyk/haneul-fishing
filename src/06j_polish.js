@@ -28,3 +28,6 @@ const _dn416=down;down=function(px,py){critPend=S==='ready'&&px!=null&&inGame()&
 function critUp(){if(critPend&&S==='charge'&&T<.18){const c=critPend;critPend=null;go('ready');power=0;idleT=0;critTap(c.px,c.py)}else critPend=null}
 addEventListener('pointerup',critUp,true);addEventListener('pointercancel',()=>{critPend=null},true);
 if(TEST)Object.defineProperties(window.__w,{critTap:{value:critTap},crit:{get(){return crit}}});
+// 4.16.1 상태 칩: 칩 줄이 다시 그려져도 이미 보이던 칩(같은 종류·같은 아이콘)은 등장 애니메이션을 다시 하지 않음 → 새 칩만 '톡'
+{const seen=new Set(),key=c=>c.className+'|'+[...(c.textContent||'')].slice(0,1).join('');
+ new MutationObserver(()=>{const now=new Set();for(const c of $('banners').children){const k=key(c);now.add(k);if(seen.has(k))c.style.animation='none'}seen.clear();now.forEach(k=>seen.add(k))}).observe($('banners'),{childList:true})}

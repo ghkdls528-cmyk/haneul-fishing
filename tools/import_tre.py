@@ -8,9 +8,12 @@ from scipy import ndimage as nd
 B=os.path.dirname(os.path.dirname(os.path.abspath(__file__)));P=os.path.join(B,'assets','itempx.json')
 # 파일 → 보물 id (기존 보물과 같은 물건은 그 id, 새 물건은 새 id)
 MAP={'treasure_chest_old':'goldchest','treasure_compass_ancient':'compass','treasure_jewel_crown':'crown','treasure_map_bottle':'letter','treasure_pearl':'pearl',
-     'treasure_coin_pouch':'pouch','treasure_ship_bell':'bell','treasure_coral_ornament':'coral','treasure_hourglass':'hourglass','treasure_gold_fish':'goldfish'}
+     'treasure_coin_pouch':'pouch','treasure_ship_bell':'bell','treasure_coral_ornament':'coral','treasure_hourglass':'hourglass','treasure_gold_fish':'goldfish',
+     # 4.16.1 (2차 그림)
+     'treasure_old_coin':'coin','treasure_old_map':'map','treasure_jade':'jade','treasure_celadon_vase':'celadon','treasure_sea_sapphire':'sapphire'}
 src=sys.argv[1];d=json.load(open(P,encoding='utf-8'))
 for f,tid in MAP.items():
+    if not os.path.exists(os.path.join(src,f+'.png')):continue   # 폴더에 있는 것만
     im=Image.open(os.path.join(src,f+'.png')).convert('RGBA');a=np.array(im)
     if a[...,3].min()>200:raise SystemExit(f'{f}: 투명 배경이 아님')
     m=a[...,3]>24;lab,k=nd.label(nd.binary_dilation(m,iterations=2))          # 떨어진 작은 반짝이 정리

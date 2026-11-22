@@ -73,7 +73,8 @@ const WXN={clear:['☀️','맑음'],cloudy:['☁️','흐림'],rain:['🌧️',
 const _hud0=hud;hud=function(){_hud0();const sn=SEASONS[seasonNow()];$('clk').textContent=sn.ic+(WXN[weather]||['☀️'])[0];
  const extra=[];if(EVT)extra.push(EVT.k==='surge'?`<span class="ban fever">🐟 ${EVT.n} 떼 ${Math.ceil(EVT.t)}초</span>`:`<span class="ban goldt">📏 대물 경보 ${Math.ceil(EVT.t)}초${EVT.best?` · ${Math.round(EVT.best*100)}%`:''}</span>`);
  const d=save.dry||0;if(d>=10&&!CH)extra.push(`<span class="ban" style="background:#e8dcff">🔮 희귀 기운 ${'▮'.repeat(Math.min(5,Math.ceil((d-9)/4)))}${'▯'.repeat(5-Math.min(5,Math.ceil((d-9)/4)))}</span>`);
- if(extra.length){const bn=$('banners'),h0=bn.innerHTML,ins=extra.join('');if(!h0.startsWith(ins)){bn.innerHTML=ins+h0.replace(/<span class="ban (fever|goldt)">(🐟|📏)[^<]*<\/span>|<span class="ban" style="background:#e8dcff">🔮[^<]*<\/span>/g,'');bn.dataset.h=''}}};
+ // 4.16.1 깜빡임 수정: 예전엔 dataset.h를 비워서 기본 hud가 0.25초마다 칩 줄을 다시 그리고 → 여기서 또 끼워 넣기를 반복(모든 칩 등장 애니메이션 반복)
+ {const bn=$('banners'),ins=extra.join(''),base=bn.dataset.h||'';if((bn.dataset.ex||'')!==ins||(ins&&!bn.innerHTML.startsWith(ins))){bn.innerHTML=ins+base;bn.dataset.ex=ins}}};
 setInterval(()=>{if(inGame()&&(EVT||(save.dry||0)>=10))hud()},1000);
 /* ---------- 오늘의 낚시 정보 (실제 확률) ---------- */
 SH.info={t:'오늘의 낚시 정보',tabs:[]};
