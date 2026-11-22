@@ -29,6 +29,9 @@ async def main():
                 await pg.wait_for_timeout(250)
             print('result badges',await pg.evaluate("rBadges.innerText"),'clean',await pg.evaluate("JSON.stringify({c:__w.lastRes&&__w.lastRes.clean,p:__w.lastRes&&__w.lastRes.sweetPct})"))
             await pg.wait_for_timeout(600);print('notice after',await pg.evaluate("document.getElementById('notice').classList.contains('on')"))
-            await pg.screenshot(path=f'/tmp/c_{sid}_res.png');await pg.click('#bNext');await pg.wait_for_timeout(500)
+            await pg.screenshot(path=f'/tmp/c_{sid}_res.png')
+            if await pg.evaluate("document.getElementById('result').classList.contains('on')"):await pg.click('#bNext');await pg.wait_for_timeout(500)
+            else:  # 4.18부터 난이도가 올라 봇이 가끔 놓침 → 실패 화면 넘기고 다음 세트로
+                print(sid,'놓침(난이도 상향) — 다음으로');await pg.wait_for_timeout(600);await pg.mouse.click(200,500);await pg.wait_for_timeout(400)
         print('errs',errs);await b.close()
 asyncio.run(main())
