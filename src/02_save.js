@@ -44,13 +44,25 @@ function migrate4(s){const o=Object.assign({},s);o.v=5;const up=obj(s.up),gown={
 function migrate2(s){const o=fresh();o.gold=num(s.coin);o.count=num(s.count);for(const k in obj(s.dex))if(FID[k])o.dex[k]=s.dex[k];for(const k in obj(s.best))if(FID[k])o.best[k]={cm:s.best[k],kg:kgOf(FID[k],s.best[k])};return o}
 function kgOf(f,cm){return f.kg!=null?f.kg:Math.max(.01,(f.wk||.012)*cm*cm*cm/1000)}
 let save=fresh(),canSave=true,loadNote='';
+/* 4.14.2 저장 보호: 여러 탭·오래된 탭이 최신 기록을 덮어쓰지 않게
+ - REV: 저장할 때마다 1씩 오르는 번호. 내 탭이 아는 번호보다 저장소 번호가 크면(다른 탭이 더 최근에 저장) 이 탭은 저장을 멈춤(staleTab)
+ - SAFE: 새 코드만 쓰는 복구용 사본. 예전 버전 탭이 본 기록을 옛것으로 덮어써도, 불러올 때 번호가 더 큰 SAFE로 되돌림 */
+const SV_KEY='haneul-fish-v4',SV_REV='haneul-fish-v4-rev',SV_SAFE='haneul-fish-v4-safe';let myRev=0,staleTab=false;
+function revNow(){try{return Math.max(0,+(localStorage.getItem(SV_REV)||0)||0)}catch(e){return 0}}
 function load(){let raw4=null,raw3=null,raw2=null;
- try{raw4=localStorage.getItem('haneul-fish-v4');raw3=localStorage.getItem('haneul-fish-v3');raw2=localStorage.getItem('haneul-fish-v2')}catch(e){canSave=false;return}
+ try{const a=localStorage.getItem(SV_KEY),b=localStorage.getItem(SV_SAFE);raw4=a;if(b){let ra=-1,rb=-1;try{ra=a?+(JSON.parse(a).rev||0):-1}catch(e){}try{rb=+(JSON.parse(b).rev||0)}catch(e){rb=-1}if(rb>ra){raw4=b;if(a)loadNote='이전 탭이 덮어쓴 기록을 더 최근 기록으로 되돌렸어요'}}
+  myRev=revNow();if(raw4){try{myRev=Math.max(myRev,+(JSON.parse(raw4).rev||0))}catch(e){}}}catch(e){}
+ try{raw4=raw4??localStorage.getItem('haneul-fish-v4');raw3=localStorage.getItem('haneul-fish-v3');raw2=localStorage.getItem('haneul-fish-v2')}catch(e){canSave=false;return}
  try{if(raw4){const s4=JSON.parse(raw4);if(s4.v===4){localStorage.setItem('haneul-fish-v4-pre5',raw4);save=sanitize(migrate4(s4));loadNote='2.0 기록을 3.0으로 옮겼어요 (강화 단계 → 새 장비로 환산)';persist();return}save=sanitize(s4);return}}catch(e){loadNote='저장 데이터 일부가 손상돼 백업에서 복구했어요';try{const b=localStorage.getItem('haneul-fish-v4-backup');if(b){save=sanitize(JSON.parse(b));return}}catch(e2){}}
  try{if(raw3){const s=JSON.parse(raw3);localStorage.setItem('haneul-fish-v3-backup',raw3);save=sanitize(migrate3(s));loadNote='이전 버전 기록을 그대로 옮겨 왔어요 (골드·레벨·도감·장비)';persist();return}}catch(e){loadNote='이전 기록을 읽지 못해 새로 시작해요'}
  try{if(raw2){save=sanitize(migrate2(JSON.parse(raw2)));loadNote='이전 버전 기록을 옮겨 왔어요';persist()}}catch(e){}}
 let lastBackup=0;
-function persist(){try{try{save.gt=gt}catch(e0){}const js=JSON.stringify(save);localStorage.setItem('haneul-fish-v4',js);if(Date.now()-lastBackup>60000){localStorage.setItem('haneul-fish-v4-backup',js);lastBackup=Date.now()}canSave=true}catch(e){canSave=false}}
+function persist(){if(staleTab)return;try{try{save.gt=gt}catch(e0){}
+ const r=revNow();if(r>myRev){staleTab=true;try{onStaleTab()}catch(e1){}return}
+ myRev=r+1;save.rev=myRev;save.savedAt=Date.now();const js=JSON.stringify(save);localStorage.setItem(SV_KEY,js);localStorage.setItem(SV_REV,String(myRev));localStorage.setItem(SV_SAFE,js);
+ if(Date.now()-lastBackup>60000){localStorage.setItem('haneul-fish-v4-backup',js);lastBackup=Date.now()}canSave=true}catch(e){canSave=false}}
+// 다른 탭이 더 최근에 저장했을 때(화면 처리는 06h_safe.js에서 덮어씀)
+let onStaleTab=()=>{};
 function seeded(str){let h=2166136261;for(const c of str)h=Math.imul(h^c.charCodeAt(0),16777619);h>>>=0;return()=>(h=Math.imul(h^h>>>15,2246822507)>>>0,(h%10000)/10000)}
 function ensureDaily(){const d=today();
  if(!save.daily||save.daily.date!==d||!Array.isArray(save.daily.list)){const r=seeded(d),pool=MT.slice(),list=[];while(list.length<3){const m=pool.splice(Math.floor(r()*pool.length),1)[0];list.push({t:m.t,n:m.n[Math.floor(r()*m.n.length)],p:0,c:0,g:m.g})}save.daily={date:d,list,sp:[]}}

@@ -23,9 +23,10 @@ async def main():
           Object.assign(s,{gold:123456,lv:30,count:77,dex:{mackerel:5,goby:2},best:{mackerel:{cm:41,kg:.9}},gear:{rod:'r5',reel:'e5',line:'l5'},gown:Object.assign(s.gown,{r5:1,e5:1,l5:1}),pets:{cat:1},pet:'cat',locs:Object.assign(s.locs,{rock:1})});
           s.ward.own['hat:cap']=1;localStorage.setItem('haneul-fish-v4',JSON.stringify(s));return s}""")
         # 열린 페이지가 닫힐 때 자기 세이브를 다시 쓰지 않도록, 저장 키를 덮어쓴 뒤 페이지를 닫고 새로 연다
+        # 실제 4.13 사용자 저장소와 같게: 4.14.2의 복구용 사본(-safe)·저장 번호(-rev)는 없음
         raw=json.dumps(old)
         await pg.close();pg=await ctx.new_page();pg.on('pageerror',lambda e:errs.append(str(e)))
-        await pg.add_init_script("if(!sessionStorage.getItem('seeded')){localStorage.setItem('haneul-fish-v4',"+json.dumps(raw)+");localStorage.removeItem('haneul-fish-v4-backup');sessionStorage.setItem('seeded','1')}")
+        await pg.add_init_script("if(!sessionStorage.getItem('seeded')){localStorage.setItem('haneul-fish-v4',"+json.dumps(raw)+");localStorage.removeItem('haneul-fish-v4-backup');localStorage.removeItem('haneul-fish-v4-safe');localStorage.removeItem('haneul-fish-v4-rev');sessionStorage.setItem('seeded','1')}")
         await pg.goto(GAME+'?test');await pg.add_script_tag(content=BOT);await pg.wait_for_timeout(700)
         s=await pg.evaluate('__t.save()')
         diff=[k for k in ['gold','lv','count','dex','best','gear','pets','pet','locs','ward','aq'] if json.dumps(s[k],sort_keys=True)!=json.dumps(old[k],sort_keys=True)]
