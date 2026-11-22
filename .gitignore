@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+# 빌드 결과물 (python build.py 로 다시 생성)
+dist/
+# 테스트 스크린샷
+tests/*.png

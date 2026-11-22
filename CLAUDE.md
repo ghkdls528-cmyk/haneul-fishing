@@ -1,0 +1,57 @@
+# HANEUL FISHING (하늘이의 여수 낚시) — Claude Code 작업 지침
+
+## 사용자
+- **한국어로 답변**, 결론 먼저, 쉬운 말. GitHub는 처음이라 사용자가 직접 눌러야 하는 건 한 단계씩 안내.
+- 확인 안 된 건 [추정]/[확인 필요] 표시. 테스트하지 않은 기능을 "완료"라고 보고하지 말 것.
+- 이미지 생성은 Manus, 게임 기획 의견은 ChatGPT를 씀. Claude Code는 **구현·검증 담당**.
+
+## 절대 규칙
+1. **단일 HTML**: 결과물은 `dist/haneul-fishing.html` 하나. 이미지는 base64로 파일 안에 넣는다(외부 폴더 의존 금지).
+2. **세이브 보호**: localStorage 키 `haneul-fish-v4`(+ `haneul-fish-v4-backup`)와 기존 필드는 절대 지우거나 초기화하지 않는다. 새 필드는 `src/02_save.js`의 `fresh()` 기본값 + `sanitize`에 안전한 정리 코드를 함께 추가한다.
+3. 기존 콘텐츠(물고기 134종, 낚시터 10곳, 장비, 의상 30세트, 펫, 업적·칭호, 수족관, 보물·도전 모드) 삭제 금지.
+4. 브랜드 로고 금지(모자 등은 무지 또는 물고기 엠블럼). 적십자 금지(구조대는 초록 십자).
+5. 주인공 얼굴은 사용자 본인 캐릭터. 새 얼굴을 만들지 말 것.
+6. 모바일 세로(390×844) 우선.
+
+## 구조
+- `src/head.html` — HTML·CSS
+- `src/*.js` — 게임 모듈. **로드 순서는 `build.py`의 `MODS`**. 뒤 모듈(06d_modes, 06e_412 등)은 앞 함수를 `const _x0=fn; fn=function(){...}` 식으로 감싸서 확장한다. 새 기능도 이 방식으로 새 모듈에 넣는 걸 권장.
+  - 00_core 캔버스·DPR / 01_data 물고기·낚시터·장비 데이터 / 02_save 저장·마이그레이션 / 05_world 확률(weights, rollFish, makeFish)
+  - 06_game 낚시 상태기계(S: ready→charge→cast→wait→bite→hook→fight→land→result/fail) / 06b_gear 장비·위기 링(clutch)
+  - 06c_fun 오늘의 대어·행운상자·업적 알림·화면 겹침 정리·펫 쓰다듬기·안개
+  - 06d_modes 보물 낚시·시간 제한 도전·도감 검색/필터·장비 장단점·지역 골드
+  - 06e_412 계절·강풍·불운 방지·희귀 입질·낚시터 이벤트·숨은 포인트·도감 수집 보상·정보 창
+  - 06g_fun414 챔질 PERFECT 판정·콤보 연출·획득 문구·희귀 연출 단축 (연출만, 보상 변화 없음)
+  - 06f_414 전투 밸런스(목표 시간·장비 단계·체급·저항 패턴) / 실력 평가·개인 기록(fightRecords) / 테스트용 전투 시뮬레이터
+  - 07_drawworld / 07b_scenes 배경(선착장·갯바위·계곡·방파제·먼바다는 07b)
+  - 08c_pxchar 캐릭터 스프라이트(CPX), 04e_pix 물고기 스프라이트(FPX), 04f_items 장비·펫·수조 이미지(IPX)
+  - 09_ui / 09b_ui3 화면·시트·옷장·수족관
+- `assets/charpx.json` 캐릭터 30세트 프레임(`{세트id:{포즈:{src,ax,tip,w,h}}}`), `fishpx.json` 물고기 134종, `itempx.json` 장비·스킨·보트·장식·펫·수조, `outfitpx.json`, `sp2_*` 옛 스프라이트
+- `assets/incoming/` — Manus가 만든 새 이미지를 여기에 넣으면 처리해서 위 json에 합친다.
+- `docs/specs/` — ChatGPT 등에서 받은 사양서를 버전별로 넣는다 (예: `4.14.md`).
+
+## 빌드·테스트
+- 빌드: `python build.py` → `dist/haneul-fishing.html`
+- 테스트 준비(최초 1회): `pip install playwright pillow numpy scipy` 후 `python -m playwright install chromium`
+- 테스트: `python tests/t46.py` 처럼 하나씩. URL에 `?test`를 붙이면 `window.__t`, `__w`, `__cast`, `__bot` 테스트 훅이 열린다. `window.__noLuck=1`(행운 상자 끔), `__w.setEvtNext(9999)`(낚시터 이벤트 끔).
+  - t46 세트 낚시 / t47 오늘의 대어·행운 상자 / t48 손맛 마스터·화면 겹침 / t56 수족관 먹이·업적 / t57 보물·도전·도감 필터 / t61 4.12 계절·이벤트·수집 보상 / t64 위기 링 / t414 4.14 세이브 호환·실력 평가·기록 / t414m 낚시 방식 6종·보스 실전 / t414f 챔질 판정·콤보 연출·획득 문구
+  - 4.14 전투 시간은 실시간 대신 `__w.sim414(id,{n,gear:[rod,reel,line 단계 0~5],size:'s'|'n'|'l'|'g'})`로 화면 없이 빠르게 측정(실제 fight 함수 사용). 보정값은 `src/06f_414.js`의 `T414_C`·`T414_CB`.
+- 작은 수정은 관련 테스트 1~2개만, 큰 업데이트는 전부 + 화면 캡처 확인.
+- 게임 오류(pageerror) 0건이 기본 조건. 폰트 404는 오프라인 환경이면 무시.
+
+## GitHub 자동 반영 (사용자 요청: 고칠 때마다 자동으로 올리기)
+- 저장소: https://github.com/ghkdls528-cmyk/haneul-fishing (공개) · 게임 주소: https://ghkdls528-cmyk.github.io/haneul-fishing/
+- 게임을 고치면: 빌드 → 관련 테스트 통과 → `git add -A` → 커밋(무엇을 바꿨는지 한 줄) → `git push`. 따로 묻지 않고 올림.
+- 테스트가 실패하거나 확인 안 된 상태면 올리지 말고 먼저 알릴 것.
+- push하면 `.github/workflows/pages.yml`이 `python build.py`로 빌드해서 GitHub Pages에 `index.html`로 배포(1~2분). `dist/`는 저장소에 넣지 않음.
+- 공개 저장소이므로 개인정보(이름·사는 곳·직장 등)는 파일에 적지 말 것.
+- git·gh 경로: `C:\Program Files\Git\cmd\git.exe`, `C:\Program Files\GitHub CLI\gh.exe` (계정 ghkdls528-cmyk로 로그인됨)
+
+## 이미지 적용 요령 (지금까지 쓴 방식)
+- 물고기: 투명 PNG → 잘라서 긴 변 96px 도트화(색 28개, 외곽선 진갈색 #34201e) → 머리 오른쪽 → `fishpx.json[id]`
+- 캐릭터 시트: 칸 자르기 → 배경 제거(실루엣 채움 알파) → 높이 240px webp(q74, alpha_quality 60) → `charpx.json[세트][포즈]`, 낚싯대 끝 `tip` 좌표 계산
+- 꼭 적용 전후를 화면으로 비교하고, 로고·적십자가 있으면 지운다.
+
+## 버전 기록
+- 최신: 4.14+ (전투 밸런스(목표 시간은 사양의 절반)·실력 평가·개인 기록·짜릿한 손맛 연출). 이력은 `docs/CHANGELOG.md`.
+- 버전을 올릴 때 `src/09_ui.js` 등에 표시되는 버전 문구가 있으면 함께 바꾸고, CHANGELOG에 한 줄 추가.
