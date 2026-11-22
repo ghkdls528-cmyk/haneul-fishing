@@ -22,8 +22,14 @@ function palm(x,y,s,t){ctx.save();ctx.translate(x,y);ctx.strokeStyle='#9a6a3a';c
 function grass(x,y,s,t,col){ctx.strokeStyle=col;ctx.lineWidth=2.2;ctx.lineCap='round';for(let i=-2;i<=2;i++){const w=Math.sin(t*2+x*.1+i)*(4+stormAmt*6);ctx.beginPath();ctx.moveTo(x+i*3,y);ctx.quadraticCurveTo(x+i*4+w,y-8*s,x+i*5+w*1.5,y-14*s-(i%2)*4);ctx.stroke()}}
 function mountains(g,cols,h,seed){ctx.fillStyle=cols;ctx.beginPath();ctx.moveTo(0,g.surf);for(let i=0;i<=8;i++){const x=i/8*W;ctx.lineTo(x,g.surf-h*(.5+.5*Math.abs(Math.sin(i*1.7+seed))))}ctx.lineTo(W,g.surf);ctx.fill()}
 function drawFar(g,P,t){const ph=clk().i,night=ph===3,L0=save.loc,dk=(a,b,c,d)=>night?d:ph===2?c:rainAmt>.4?b:a;
- if(ipOk('bg_'+L0)){const im=IPI['bg_'+L0],h=g.surf-g.top+40,w=Math.max(W,h*im.naturalWidth/im.naturalHeight);ctx.drawImage(im,(W-w)/2,g.surf+4-h,w,h);if(ph>=2){ctx.fillStyle=night?'rgba(10,20,60,.55)':'rgba(255,120,90,.18)';ctx.fillRect(0,g.top,W,g.surf-g.top+4)}return}
- if(L0==='pier')drawPierFar(g,t,dk,ph,night);
+ // 4.14 배경 그림(itempx bg_<id>): 비율 유지하며 화면을 꽉 채우고 아래(수면)에 맞춤 · 가로가 넓으면 위쪽 하늘을 잘라냄
+ // 세로 화면에서 잘릴 때 보여줄 중심: 달빛 바다는 보름달, 방파제는 등대 쪽
+ if(ipOk('bg_'+L0)){const im=IPI['bg_'+L0],h0=g.surf+4,k=Math.max(W/im.naturalWidth,(h0-g.top+40)/im.naturalHeight),w=im.naturalWidth*k,h=im.naturalHeight*k;
+  ctx.save();ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';ctx.drawImage(im,clamp(W/2-w*({moon:.7,light:.6}[L0]||.5),W-w,0),h0-h,w,h);ctx.restore();
+  if(ph>=2){ctx.fillStyle=night?'rgba(10,20,60,.55)':'rgba(255,120,90,.18)';ctx.fillRect(0,0,W,h0)}
+  const dk0=Math.max(rainAmt*.35,stormAmt*.5,fogAmt*.25);if(dk0>.01){ctx.fillStyle=`rgba(${fogAmt>rainAmt?'220,228,232':'60,72,86'},${dk0})`;ctx.fillRect(0,0,W,h0)}
+  if(snowAmt>.05){ctx.fillStyle=`rgba(235,242,250,${snowAmt*.15})`;ctx.fillRect(0,0,W,h0)}}
+ else if(L0==='pier')drawPierFar(g,t,dk,ph,night);
  else if(L0==='rock')drawRockFar(g,t,dk,ph,night);
  else if(L0==='light')drawLightScene(g,t,dk,ph,night);
  else if(L0==='valley')drawValleyScene(g,t,dk,ph,night);

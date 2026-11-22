@@ -4,3 +4,5 @@ __pycache__/
 dist/
 # 테스트 스크린샷
 tests/*.png
+# Manus 원본 이미지(용량 큼) — 변환본만 json에 들어감
+assets/incoming/

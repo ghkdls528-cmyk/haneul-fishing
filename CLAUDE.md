@@ -50,6 +50,7 @@
 ## 이미지 적용 요령 (지금까지 쓴 방식)
 - 물고기: 투명 PNG → 잘라서 긴 변 96px 도트화(색 28개, 외곽선 진갈색 #34201e) → 머리 오른쪽 → `fishpx.json[id]`
 - 캐릭터 시트: 칸 자르기 → 배경 제거(실루엣 채움 알파) → 높이 240px webp(q74, alpha_quality 60) → `charpx.json[세트][포즈]`, 낚싯대 끝 `tip` 좌표 계산
+- 낚시터 배경: `bg_<낚시터id>.png`(가로 2:1) 폴더를 `assets/incoming/`에 두고 `python tools/import_bg.py <폴더>` → `itempx.json`의 `bg_<id>`(webp 1600px). 원본은 `assets/incoming/`(git 제외)에 보관. 세로 화면 중심 위치는 `07_drawworld.js` drawFar의 `{moon:.7,light:.6}`.
 - 꼭 적용 전후를 화면으로 비교하고, 로고·적십자가 있으면 지운다.
 
 ## 버전 기록
