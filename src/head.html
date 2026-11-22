@@ -195,7 +195,7 @@ body.streak8::after{box-shadow:inset 0 0 24px 4px rgba(255,120,210,.6)}
 
 /* 4.5 겹침 정리: 던지기·손맛 중엔 배너를 숨기고 알림은 끝난 뒤 표시, 콤보는 게이지 아래로 */
 #banners,#combo{transition:opacity .25s,transform .25s,top .25s}
-body.busy #banners{opacity:0;transform:translateY(-14px)}
+/* 4.15.2 상태 칩은 힘겨루기 때만 숨김(던질 때마다 깜빡이던 문제) */body.busyF #banners{opacity:0;transform:translateY(-14px)}
 body.busy #combo{top:var(--gb,170px)}
 body.resOn #banners,body.resOn #combo{opacity:0}
 /* 4.15.1 알림: 바쁠 때 즉시 숨김(깜빡임 원인) 대신 06c layoutTick에서 부드럽게 접음 */

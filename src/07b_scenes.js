@@ -72,11 +72,8 @@ function drawLightScene(g,t,dk,ph,night){const hgt=g.surf-g.top;
  const sx=bx0+(bx1-bx0)*((t*.13)%1);if(Math.sin(t*2.3)>.92&&!LOWGFX&&Math.random()<.4)parts.push({x:sx,y:g.surf-4,vx:rnd(-15,15),vy:rnd(-60,-30),l:.5,t:0,c:'rgba(255,255,255,.9)',r:2,g:1})}
 function drawLightPlat(g,t,night){const y=g.platY,e=g.edge;
  const top=night?'#7a8296':'#e6e1d6',face=night?'#555d72':'#bdb7aa',face2=night?'#3a4256':'#8f897d';
- // 4.15.1 물속까지 꽉 찬 벽이 수중 배경을 가려서: 수면 조금 아래까지만 옆면, 그 아래는 기둥 3개
- const sb=g.surf+14,fg=ctx.createLinearGradient(0,y+12,0,sb);fg.addColorStop(0,face);fg.addColorStop(1,face2);ctx.fillStyle=fg;ctx.fillRect(0,y+12,e,sb-y-12);
- const pg=ctx.createLinearGradient(0,sb,0,g.bed);pg.addColorStop(0,face2);pg.addColorStop(1,night?'rgba(40,50,70,.55)':'rgba(110,120,120,.45)');ctx.fillStyle=pg;const pw=Math.max(14,e*.07);
- for(const px of[e*.12,e*.5,e-pw-2]){ctx.fillRect(px,sb,pw,g.bed-sb);ctx.fillStyle='rgba(0,0,0,.12)';ctx.fillRect(px+pw-3,sb,3,g.bed-sb);ctx.fillStyle=pg}
- ctx.fillStyle='rgba(0,0,0,.18)';ctx.fillRect(0,sb-3,e,3);
+ // 4.15.2 바다에 떠 보이던 기둥 받침 삭제(사용자 요청): 수중 배경이 있으면 옆면을 수면 조금 아래까지만 그리고(06j에서 물색으로 섞음), 없으면 예전처럼 바닥까지
+ const sb=ipOk('uw_light')?g.surf+18:g.bed,fg=ctx.createLinearGradient(0,y+12,0,sb);fg.addColorStop(0,face);fg.addColorStop(1,face2);ctx.fillStyle=fg;ctx.fillRect(0,y+12,e,sb-y-12);
  ctx.fillStyle=top;ctx.fillRect(0,y,e,12);ctx.fillStyle=night?'#8a92a6':'#f4f0e8';ctx.fillRect(0,y,e,2.5);
  ctx.strokeStyle='rgba(0,0,0,.12)';ctx.lineWidth=1.5;for(let x=e*.22;x<e;x+=e*.26){ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x,y+12);ctx.stroke();ctx.beginPath();ctx.moveTo(x,y+12);ctx.lineTo(x,sb);ctx.stroke()}
  ctx.fillStyle='rgba(0,0,0,.08)';for(let i=0;i<18;i++){ctx.fillRect(srnd(i)*e,y+14+srnd(i+3)*(sb-y-20),2,2)}
@@ -86,10 +83,7 @@ function drawLightPlat(g,t,night){const y=g.platY,e=g.edge;
  const ry=y-g.ch*.26,rc=night?'#9aa2b8':'#8a929c';ctx.strokeStyle=rc;ctx.lineWidth=2.5;ctx.beginPath();ctx.moveTo(3,ry);ctx.lineTo(e*.36,ry);ctx.stroke();ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(3,ry+g.ch*.12);ctx.lineTo(e*.36,ry+g.ch*.12);ctx.stroke();ctx.lineWidth=3;for(let x=3;x<=e*.36+1;x+=e*.12){ctx.beginPath();ctx.moveTo(x,ry-1);ctx.lineTo(x,y);ctx.stroke()}
  // 계선주(볼라드)
  const bx=e-g.ch*.16;ctx.fillStyle=night?'#4a4a58':'#3a3a44';ctx.beginPath();ctx.roundRect(bx-6,y-14,12,14,[5,5,1,1]);ctx.fill();ctx.fillRect(bx-9,y-15,18,3);ctx.strokeStyle='#c9a26a';ctx.lineWidth=2.5;ctx.beginPath();ctx.moveTo(bx,y-10);ctx.quadraticCurveTo(bx+14,y+20,e+8,g.surf+4);ctx.stroke();
- // 테트라포드 더미
- const c1=night?'#8a92a8':'#dcd7cc',c2=night?'#40475e':'#8e897d';
- [[e+30,g.surf+4,13,1.9],[e+6,g.surf-4,17,.3],[e+20,g.surf+14,15,2.6],[e-2,g.surf+16,16,.9]].forEach(([x,yy,s,r])=>tetra(x,yy,s,c1,c2,r+Math.sin(t*.3)*0));
- ctx.strokeStyle='rgba(255,255,255,.75)';ctx.lineWidth=2;for(let k=0;k<4;k++){const a=(t*.5+k/4)%1;ctx.globalAlpha=1-a;ctx.beginPath();ctx.ellipse(e+20,g.surf+4,18+a*30,2+a*2,0,0,7);ctx.stroke()}ctx.globalAlpha=1;
+ // 4.15.2 받침 끝 물 위에 떠 보이던 테트라포드 더미·물결 고리 삭제 (사용자 요청)
  if(Math.sin(t*1.7)>.95&&!LOWGFX&&Math.random()<.4)splash(e+18,g.surf,8+stormAmt*14,160+stormAmt*100)}
 /* 4.8 여수 선착장 · 돌산 갯바위 재디자인 */
 function hillLayer(g,col,h,seed,x0,x1){ctx.fillStyle=col;ctx.beginPath();ctx.moveTo(x0,g.surf);const n=10;for(let i=0;i<=n;i++){const u=i/n,x=x0+(x1-x0)*u;ctx.lineTo(x,g.surf-h*(.35+.65*Math.abs(Math.sin(u*3.1+seed))*(1-Math.abs(u-.5)*.6)))}ctx.lineTo(x1,g.surf);ctx.closePath();ctx.fill()}

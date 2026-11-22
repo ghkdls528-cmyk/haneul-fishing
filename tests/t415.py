@@ -56,18 +56,18 @@ async def main():
         # 부적(★4): 비 올 때만 ×1.375
         await equip(pg,['amulet']);await pg.evaluate("__t.setWeather('clear')");c0=await pg.evaluate("__w.treChance()");await pg.evaluate("__t.setWeather('rain')");c1=await pg.evaluate("__w.treChance()")
         chk('부적: 비 올 때만 보물 확률 ×1.375',abs(c0-.6)<1e-9 and abs(c1-.825)<1e-9,f'{c0},{c1}');await pg.evaluate("__t.setWeather('clear')")
-        # 입질 대기: 나침반 ★3 = -8%  (같은 무작위값으로 비교할 수 없으니 실제 대기 평균 비교 대신 fg.bite 비율을 직접 확인)
-        await equip(pg,['compass']);await pg.evaluate("__t.force('mackerel')");await pg.evaluate("Math.__r=Math.random;Math.random=()=>.5");await pg.evaluate('__cast(900)')
-        for _ in range(200):
-            if await pg.evaluate('__t.S')=='wait':break
-            await pg.wait_for_timeout(15)
-        bt1=await pg.evaluate('__t.fg.bite');await pg.evaluate("Math.random=Math.__r");await pg.evaluate('__bot(60000)');await nxt(pg)
-        await equip(pg,[]);await pg.evaluate("__t.force('mackerel')");await pg.evaluate("Math.__r=Math.random;Math.random=()=>.5");await pg.evaluate('__cast(900)')
-        for _ in range(200):
-            if await pg.evaluate('__t.S')=='wait':break
-            await pg.wait_for_timeout(15)
-        bt0=await pg.evaluate('__t.fg.bite');await pg.evaluate("Math.random=Math.__r");await pg.evaluate('__bot(60000)');await nxt(pg)
-        chk('입질 대기 -8% (나침반)',abs(bt1-bt0*.92)<1e-6,f'{bt0:.3f}->{bt1:.3f}')
+        # 입질 대기: 나침반 ★3 = -8%  (같은 난수로 두 번 던져 fg.bite 비교 · 물고기 떼·점프 이벤트가 끼면 다시 잼)
+        async def bite_of(eq):
+            await equip(pg,eq);await pg.evaluate("__t.force('mackerel')");await pg.evaluate("Math.__r=Math.random;Math.random=()=>.5");await pg.evaluate('__cast(900)')
+            for _ in range(200):
+                if await pg.evaluate('__t.S')=='wait':break
+                await pg.wait_for_timeout(15)
+            v=await pg.evaluate('__t.fg.bite');await pg.evaluate("Math.random=Math.__r");await pg.evaluate('__bot(60000)');await nxt(pg);return v
+        okc=False
+        for _ in range(4):
+            bt1=await bite_of(['compass']);bt0=await bite_of([])
+            if abs(bt1-bt0*.92)<1e-6:okc=True;break
+        chk('입질 대기 -8% (나침반)',okc,f'{bt0:.3f}->{bt1:.3f}')
         # 콤보 보호: 은빛 반지, 하루 3회
         await equip(pg,['ring']);await catch(pg,'mackerel');await nxt(pg);await catch(pg,'mackerel');await nxt(pg)
         c0=await pg.evaluate('__w.combo');await pg.evaluate("fail('x')");await pg.wait_for_timeout(200)

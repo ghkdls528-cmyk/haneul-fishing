@@ -74,7 +74,7 @@ function critL(f){const k=W>900&&H>600?1.25:1;return critL0(f)*k}
 function toast(t,ms=1100){const e=$('toast');e.textContent=t;e.classList.remove('on');void e.offsetWidth;e.classList.add('on');clearTimeout(toast.h);toast.h=setTimeout(()=>e.classList.remove('on'),ms)}
 const nq=[];let nOn=false;
 function notice(t){if(!t||nq.includes(t))return;nq.push(t);while(nq.length>3)nq.shift();if(!nOn)nNext()}
-function nNext(){if(document.body.classList.contains('busy')&&nq.length){nOn=true;clearTimeout(nNext.w);nNext.w=setTimeout(nNext,300);return}const t=nq.shift();if(!t){nOn=false;return}nOn=true;const e=$('notice');e.textContent=t;e.classList.add('on');setTimeout(()=>{e.classList.remove('on');setTimeout(nNext,450)},nq.length?2000:2600)}
+function nNext(){if(document.body.classList.contains('busyF')&&nq.length){nOn=true;clearTimeout(nNext.w);nNext.w=setTimeout(nNext,300);return}const t=nq.shift();if(!t){nOn=false;return}nOn=true;const e=$('notice');e.textContent=t;e.classList.add('on');setTimeout(()=>{e.classList.remove('on');setTimeout(nNext,450)},nq.length?2000:2600)}
 function bigText(t,sub,col){const e=$('big');e.innerHTML=`<b style="color:${col||'#ffe066'}">${t}</b>${sub?`<small>${sub}</small>`:''}`;e.classList.remove('on');void e.offsetWidth;e.classList.add('on');clearTimeout(bigText.h);bigText.h=setTimeout(()=>e.classList.remove('on'),1700)}
 const PMAX=()=>LOWGFX?140:300;
 function splash(x,y,n=14,sp=170,col='#d6f3ff'){for(let i=0;i<n&&parts.length<PMAX();i++)parts.push({x,y,vx:(Math.random()-.5)*sp,vy:-60-Math.random()*sp,l:.7+Math.random()*.45,t:0,c:col,r:2+Math.random()*3.5,g:1})}
