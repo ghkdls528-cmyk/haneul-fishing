@@ -15,7 +15,13 @@ const TRE=[
  ['icebrooch','얼음꽃 브로치','gem',4,1100,4,'ice','','녹지 않는 얼음으로 만든 브로치',0.2,'#cff4ff'],
  ['crown','가라앉은 왕관','crown',5,3000,1.2,'*','fog','안개 낀 날, 옛 왕국의 왕관이 떠오른대요',3],
  ['moonpearl','달빛 진주','pearl',5,2800,1.5,'moon,light','night','달빛을 머금은 신비한 진주',0.5,'#d8ccff'],
- ['trident','용궁의 삼지창','trident',5,3500,.8,'deep,moon','','용왕이 쓰던 전설의 삼지창',9]
+ ['trident','용궁의 삼지창','trident',5,3500,.8,'deep,moon','','용왕이 쓰던 전설의 삼지창',9],
+ // 4.15 새 보물 (Manus 그림) — ★1~5 하나씩
+ ['pouch','금화 꾸러미','pouch',1,100,26,'*','','뱃사람이 흘린 금화 주머니. 아직 묵직해요',0.7],
+ ['bell','난파선의 종','bell',2,250,12,'rock,light,sea,deep','','가라앉은 배에서 건진 청동 종. 흔들면 뎅— 울려요',4],
+ ['coral','산호 장식','coral',3,520,6,'reef,sea,moon','','용궁 잔치에 쓰였다는 붉은 산호 장식',0.8],
+ ['hourglass','금빛 모래시계','hourglass',4,1250,3,'*','night','밤이 깊을수록 모래알이 반짝이는 시계',1.2],
+ ['goldfish','황금 물고기상','fishstatue',5,3200,1,'sea,reef,deep','rain','비 오는 날 바다 밑에서 빛나는 황금 조각상',6]
 ].map(([id,n,kind,r,val,w,loc,cond,d,kg,col])=>({id,n,kind,r,val,w,loc:loc==='*'?null:loc.split(','),cond,d,kg,col}));
 const TREI={};TRE.forEach(t=>TREI[t.id]=t);
 const TRE_COND={night:'🌙 밤',storm:'⛈️ 폭풍우',rain:'🌧️ 비',fog:'🌫️ 안개',snow:'❄️ 눈'};
@@ -23,7 +29,7 @@ function treCondOK(t){if(!t.cond)return true;const ph=clk().i;return t.cond==='n
 function treHere(){return TRE.filter(t=>(!t.loc||t.loc.includes(save.loc))&&treCondOK(t))}
 function pickTre(){const L=treHere();if(!L.length)return null;const ws=L.map(t=>t.w*(fever>0&&t.r>=4?2:1)*(usedGoldB&&t.r>=4?3:1)*(t.cond?1.6:1));let r=Math.random()*ws.reduce((a,b)=>a+b,0);for(let i=0;i<L.length;i++){r-=ws[i];if(r<=0)return L[i]}return L[L.length-1]}
 function makeTre(t){const f=makeFish(FID.chest);Object.assign(f,{tre:t.id,n:t.n,d:t.d,r:t.r,p:Math.min(5,1+t.r*.7),giant:false,v:'',kgv:t.kg});return f}
-const _rollFish0=rollFish;rollFish=function(spot){if(save.mode==='treasure'&&!CH&&!practice&&!bossPending&&!(TEST&&window.__force)&&Math.random()<.6){const t=pickTre();if(t)return makeTre(t)}if(TEST&&window.__forceTre){const t=TREI[window.__forceTre];window.__forceTre=null;if(t)return makeTre(t)}return _rollFish0(spot)};
+const _rollFish0=rollFish;rollFish=function(spot){if(save.mode==='treasure'&&!CH&&!practice&&!bossPending&&!(TEST&&window.__force)&&Math.random()<treChance()){const t=pickTre();if(t)return makeTre(t)}if(TEST&&window.__forceTre){const t=TREI[window.__forceTre];window.__forceTre=null;if(t)return makeTre(t)}return _rollFish0(spot)};
 function treasureResult(){const f=fish,t=TREI[f.tre],rec=save.tre[t.id],isNew=!rec;let gold=Math.round(t.val*(1+save.lv*.02)*rnd(.9,1.1)*(fever>0?1.5:1));const xp=8+t.r*14;
  const R=save.tre[t.id]||(save.tre[t.id]={n:0,first:today(),loc:save.loc});R.n++;save.st.tre=(save.st.tre||0)+1;save.gold+=gold;mission('gold',gold);addXp(xp);
  lastRes={f,isNew,rec:false,gold,xp,feverStart:false,todayBest:false,released:false,bossMsg:'',tre:t};persist();hud();go('result');fillResult(lastRes,1,1);
@@ -129,7 +135,7 @@ function gearProsCons(cat,it){const L=GLIST[cat],cur=L.find(x=>x.id===save.gear[
  return`<div class="eff" style="background:#fbfff4">👍 장점: ${pros.length?pros.join(', '):'지금보다 나은 점 없음'}<br>👎 단점: ${cons.length?cons.join(', '):'없음'}<br>🎯 이런 낚시에 좋아요: ${use}</div>`}
 const _gearHTML0=gearHTML;gearHTML=function(cat){const h=_gearHTML0(cat),L=GLIST[cat],sel=gsel[cat]||save.gear[cat],it=L.find(x=>x.id===sel);return h.replace('<div class="gbtn">',gearProsCons(cat,it)+'<div class="gbtn">')};
 /* ---------- 4.9 업적 ---------- */
-[['t1','보물','첫 보물','보물 1개 건지기',s=>(s.st.tre||0)>=1,300],['t2','보물','보물 사냥꾼','보물 8종 모으기',s=>Object.keys(s.tre||{}).length>=8,4000,'보물 사냥꾼'],['t3','보물','용궁의 주인','보물 16종 모두 모으기',s=>TRE.every(t=>(s.tre||{})[t.id]),20000,'용궁의 주인'],
+[['t1','보물','첫 보물','보물 1개 건지기',s=>(s.st.tre||0)>=1,300],['t2','보물','보물 사냥꾼','보물 8종 모으기',s=>Object.keys(s.tre||{}).length>=8,4000,'보물 사냥꾼'],['t3','보물','용궁의 주인','보물 21종 모두 모으기',s=>TRE.every(t=>(s.tre||{})[t.id]),20000,'용궁의 주인'],
  ['h1','도전','첫 도전','시간 제한 도전 완료',s=>(s.chal||{}).total>=1,300],['h2','도전','스피드 낚시꾼','도전 3,000점',s=>(s.chal||{}).best>=3000,2000,'스피드 낚시꾼'],['h3','도전','번개 손','도전 8,000점',s=>(s.chal||{}).best>=8000,6000,'번개 손']]
  .forEach(([id,c,n,d,ok,g,title])=>ACH.push({id,c,n,d,ok:sv=>{try{return!!ok(sv)}catch(e){return false}},g,title}));
 if(TEST)Object.defineProperties(window.__w,{CH:{get(){return CH}},TRE:{value:TRE},DXF:{value:DXF},startChal:{value:startChal}});
