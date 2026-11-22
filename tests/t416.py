@@ -10,7 +10,7 @@ async def main():
         await pg.goto(GAME+'?test');await pg.evaluate('localStorage.clear()');await pg.reload();await pg.add_script_tag(content=BOT);await pg.wait_for_timeout(600)
         chk('기본 음량 BGM 35%·효과음 65%',await pg.evaluate("[__t.save().set.bgmVol,__t.save().set.sfxVol,__t.save().set.snd]")==[.35,.65,1])
         await pg.click('#bStart');await pg.wait_for_timeout(1500)
-        st=await pg.evaluate("({bus:!!__w.SND.bus,keys:__w.AUDK.length})");chk('오디오 묶음 생성·음원 25개 포함',st['bus'] and st['keys']==25,str(st))
+        st=await pg.evaluate("({bus:!!__w.SND.bus,keys:__w.AUDK.length})");chk('오디오 묶음 생성·음원 47개 포함',st['bus'] and st['keys']==47,str(st))
         # 1) 25개 모두 디코딩 · 길이·반복 구간
         meta=await pg.evaluate("""Promise.all(__w.AUDK.map(k=>__w.sndLoad(k).then(B=>[k,B?[+B.b.duration.toFixed(3),+B.ls.toFixed(4),+(B.le-B.ls).toFixed(3),B.b.numberOfChannels]:null])))""")
         bad_dec=[m for m in meta if not m[1]];chk('25개 모두 디코딩',not bad_dec,str(bad_dec))
@@ -54,7 +54,7 @@ async def main():
         # 5) 설정: 패널·슬라이더·끄기·저장
         await pg.evaluate("openSheet('set')");await pg.wait_for_timeout(500)
         ui=await pg.evaluate("[!!document.querySelector('input[data-vol=bgmVol]'),!!document.querySelector('input[data-vol=sfxVol]'),!!document.querySelector('button[data-id=snd]'),document.querySelectorAll('button[data-snd]').length]")
-        chk('설정: 전체·BGM·효과음 켜기/끄기 + 음량 슬라이더 2개 + 미리 듣기 25개',ui==[True,True,True,25],str(ui))
+        chk('설정: 전체·BGM·효과음 켜기/끄기 + 음량 슬라이더 2개 + 미리 듣기 47개',ui==[True,True,True,47],str(ui))
         await pg.evaluate("(()=>{const r=document.querySelector('input[data-vol=bgmVol]');r.value=50;r.dispatchEvent(new Event('input',{bubbles:true}));r.dispatchEvent(new Event('change',{bubbles:true}))})()");await pg.wait_for_timeout(400)
         gv=await pg.evaluate("[__t.save().set.bgmVol,+__w.SND.bus.bgm.gain.value.toFixed(3)]");chk('BGM 슬라이더 50% 반영',gv[0]==.5 and abs(gv[1]-.575)<.02,str(gv))
         await pg.click("button[data-id='snd']");await pg.wait_for_timeout(500);og=await pg.evaluate("[__t.save().set.snd,+__w.SND.bus.out.gain.value.toFixed(3)]");chk('전체 사운드 끄기',og[0]==0 and og[1]<.01,str(og))

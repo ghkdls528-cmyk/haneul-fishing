@@ -40,10 +40,11 @@ async def main():
         res={}
         for L in ['rock','light','valley','reef']:
             await pg.evaluate(f"(()=>{{const s=__t.save();s.locs['{L}']=1;__t.set('loc','{L}')}})()");await pg.wait_for_timeout(600)
-            px=await pg.evaluate("(()=>{const c=document.getElementById('c'),g=c.getContext('2d'),d=window.devicePixelRatio||1,y=Math.round((innerHeight*.75)*d),x=Math.round(20*d),p=g.getImageData(x,y,1,1).data;return[p[0],p[1],p[2]]})()")
+            # 왼쪽 가장자리 세로 띠(수면 아래 ~ 화면 75%)에서 물빛(파랑·초록이 빨강보다 큼) 비율 — 물속 그림의 바위·물고기 몇 개는 괜찮음
+            px=await pg.evaluate("(()=>{const c=document.getElementById('c'),g=c.getContext('2d'),d=window.devicePixelRatio||1,x=Math.round(20*d);let w=0,n=0;for(let yy=innerHeight*.4;yy<innerHeight*.75;yy+=6){const p=g.getImageData(x,Math.round(yy*d),1,1).data;n++;if(p[2]>p[0]+8||p[1]>p[0]+8)w++}return +(w/n).toFixed(2)})()")
             res[L]=px
         # 물속(파랑·초록 계열)이면 B 또는 G가 R보다 큼 — 예전 바위·콘크리트·모래 벽은 회색/베이지(R≥B)
-        chk('받침이 화면 아래까지 물을 가리지 않음',all(p[2]>p[0]+8 or p[1]>p[0]+8 for p in res.values()),str(res))
+        chk('받침이 화면 아래까지 물을 가리지 않음',all(v>=.6 for v in res.values()),str(res))
         chk('pageerror 0',not errs,str(errs[:3]))
         await b.close()
     print('PASS',len(ok),'FAIL',len(bad),bad)

@@ -178,5 +178,159 @@
   "bpm": 108,
   "bars": 32,
   "mp3": 711720
+ },
+ "layer_tension": {
+  "samples": 352800,
+  "sr": 44100,
+  "sec": 8.0,
+  "loop": true,
+  "mp3": 64365
+ },
+ "layer_danger": {
+  "samples": 264600,
+  "sr": 44100,
+  "sec": 6.0,
+  "loop": true,
+  "mp3": 48274
+ },
+ "amb_waves": {
+  "samples": 529200,
+  "sr": 44100,
+  "sec": 12.0,
+  "loop": true,
+  "mp3": 96339
+ },
+ "amb_gulls": {
+  "samples": 617400,
+  "sr": 44100,
+  "sec": 14.0,
+  "loop": true,
+  "mp3": 112222
+ },
+ "amb_wind": {
+  "samples": 441000,
+  "sr": 44100,
+  "sec": 10.0,
+  "loop": true,
+  "mp3": 80248
+ },
+ "amb_rain": {
+  "samples": 352800,
+  "sr": 44100,
+  "sec": 8.0,
+  "loop": true,
+  "mp3": 64365
+ },
+ "amb_storm": {
+  "samples": 441000,
+  "sr": 44100,
+  "sec": 10.0,
+  "loop": true,
+  "mp3": 80248
+ },
+ "amb_night_waves": {
+  "samples": 529200,
+  "sr": 44100,
+  "sec": 12.0,
+  "loop": true,
+  "mp3": 96339
+ },
+ "sfx_thunder": {
+  "samples": 114660,
+  "sr": 44100,
+  "sec": 2.6,
+  "loop": false,
+  "mp3": 26384
+ },
+ "fish_small_splash": {
+  "samples": 5292,
+  "sr": 44100,
+  "sec": 0.12,
+  "loop": false,
+  "mp3": 1568
+ },
+ "fish_big_splash": {
+  "samples": 39690,
+  "sr": 44100,
+  "sec": 0.9,
+  "loop": false,
+  "mp3": 9404
+ },
+ "fish_rare_hook": {
+  "samples": 30869,
+  "sr": 44100,
+  "sec": 0.7,
+  "loop": false,
+  "mp3": 7315
+ },
+ "boss_roar": {
+  "samples": 88200,
+  "sr": 44100,
+  "sec": 2.0,
+  "loop": false,
+  "mp3": 20376
+ },
+ "evt_golden": {
+  "samples": 50043,
+  "sr": 44100,
+  "sec": 1.135,
+  "loop": false,
+  "mp3": 11755
+ },
+ "evt_school": {
+  "samples": 39690,
+  "sr": 44100,
+  "sec": 0.9,
+  "loop": false,
+  "mp3": 9404
+ },
+ "evt_bigfish": {
+  "samples": 61740,
+  "sr": 44100,
+  "sec": 1.4,
+  "loop": false,
+  "mp3": 14368
+ },
+ "evt_fever": {
+  "samples": 50033,
+  "sr": 44100,
+  "sec": 1.135,
+  "loop": false,
+  "mp3": 11755
+ },
+ "evt_boss": {
+  "samples": 105840,
+  "sr": 44100,
+  "sec": 2.4,
+  "loop": false,
+  "mp3": 24294
+ },
+ "react_wow": {
+  "samples": 30869,
+  "sr": 44100,
+  "sec": 0.7,
+  "loop": false,
+  "mp3": 7315
+ },
+ "react_new": {
+  "samples": 27342,
+  "sr": 44100,
+  "sec": 0.62,
+  "loop": false,
+  "mp3": 6531
+ },
+ "pet_pat": {
+  "samples": 26393,
+  "sr": 44100,
+  "sec": 0.598,
+  "loop": false,
+  "mp3": 6270
+ },
+ "pet_love": {
+  "samples": 35280,
+  "sr": 44100,
+  "sec": 0.8,
+  "loop": false,
+  "mp3": 8359
  }
 }

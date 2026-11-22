@@ -101,12 +101,13 @@ const SND_LIST=[['bgm_01_yosu_morning','🎵 여수의 작은 낚시터'],['bgm_
 function sndHTML(){const s=save.set,tg=(k,n)=>`<div class="tog"><span>${n}</span><button data-act="set" data-id="${k}">${s[k]?'켜짐':'꺼짐'}</button></div>`,
  sl=(k,n,on)=>`<div class="tog sl416"><span>${n}</span><input type="range" min="0" max="100" step="5" value="${Math.round(s[k]*100)}" data-vol="${k}" aria-label="${n}" ${on?'':'disabled'}><b data-volv="${k}">${Math.round(s[k]*100)}%</b></div>`;
  return `<div class="sec">🔊 소리</div>`+tg('snd','🔈 전체 사운드')+tg('bgm','🎵 배경음악·환경음')+sl('bgmVol','🎚️ 배경음악 음량',s.bgm&&s.snd)+tg('sfx','🔊 효과음')+sl('sfxVol','🎚️ 효과음 음량',s.sfx&&s.snd)
- +`<details class="sp416"><summary>🎧 사운드 미리 듣기 (배경음악 5곡 · 효과음 20종)</summary><div class="spg416">${SND_LIST.map(([k,n])=>`<button data-snd="${k}">${n}</button>`).join('')}</div><p>배경음악 미리 듣기는 20초 뒤 원래 음악으로 돌아가요</p></details>`}
+ +`<details class="sp416"><summary>🎧 사운드 미리 듣기 (${SND_LIST.length}종)</summary><div class="spg416">${SND_LIST.map(([k,n])=>`<button data-snd="${k}">${n}</button>`).join('')}</div><p>배경음악 미리 듣기는 20초 뒤 원래 음악으로 돌아가요</p></details>`}
 const _sh416=setHTML;setHTML=function(){return sndHTML()+_sh416().replace(/<div class="tog"><span>🔊 효과음<\/span>.*?<\/div>/,'').replace(/<div class="tog"><span>🎵 배경음악·환경음<\/span>.*?<\/div>/,'')};
 $('sbody').addEventListener('input',e=>{const r=e.target.closest('input[data-vol]');if(!r)return;save.set[r.dataset.vol]=clamp(+r.value/100,0,1);const v=$('sbody').querySelector(`[data-volv="${r.dataset.vol}"]`);if(v)v.textContent=r.value+'%';sndApply()});
 $('sbody').addEventListener('change',e=>{if(e.target.closest('input[data-vol]')){persist();if(e.target.dataset.vol==='sfxVol')sp('sfx_17_fish_caught',{gap:0})}});
 $('sbody').addEventListener('click',e=>{const b=e.target.closest('button[data-snd]');if(b){audio();const k=b.dataset.snd;
   if(/^bgm_/.test(k)){SND.preview=k;SND.previewT=performance.now()+20000;SND.want=k;bgmSwitch(k);toast('🎵 '+b.textContent.replace('🎵 ',''),1200)}
+  else if(/^(layer_|amb_)/.test(k))return;   // 반복 소리는 06n에서 3초만
   else{SND.uiT=performance.now();if(/05_cast|11_reel/.test(k)){const p=sp(k,{gap:0})}else sp(k,{gap:0})}return}
  const t=e.target.closest('button[data-act="set"]');if(t&&['snd','bgm','sfx'].includes(t.dataset.id))setTimeout(()=>{sndApply();if(sheet.k==='set')renderSheet()},0)},false);
 if(TEST)Object.defineProperties(window.__w,{SND:{get(){return SND}},sndLoad:{value:sndLoad},sp:{value:sp},pickBgm:{value:pickBgm},AUDK:{value:Object.keys(AUD)}});
