@@ -15,11 +15,7 @@ async def main():
         b=await p.chromium.launch(**LAUNCH);pg=await b.new_page(viewport={'width':390,'height':844},has_touch=True,device_scale_factor=2);errs=[];pg.on('pageerror',lambda e:errs.append(str(e)))
         await pg.goto(GAME+'?test');await pg.evaluate('localStorage.clear()');await pg.reload();await pg.add_script_tag(content=BOT);await pg.wait_for_timeout(500);await pg.click('#bStart');await pg.wait_for_timeout(400)
         await pg.evaluate("window.__noLuck=1;__t.set('lv',30);__t.setGear('r3','e3','l3');__t.set('set',Object.assign(__t.save().set,{reveal:'short'}))")
-        # 1 모드 시트
-        await pg.wait_for_timeout(700);await pg.click('#cMode');await pg.wait_for_timeout(500);await pg.screenshot(path='/tmp/m_mode.png')
-        await pg.click('[data-mact=treasure]');await pg.wait_for_timeout(300);print('mode',await pg.evaluate("__t.save().mode"),'chip',await pg.evaluate("cMode.textContent"))
-        await pg.evaluate("closeSheet&&closeSheet()") if False else await pg.evaluate("document.getElementById('sheet').classList.remove('on','show')")
-        await pg.wait_for_timeout(400)
+        # 1 모드 시트 — 4.19에서 낚시 모드 삭제(사용자 요청)로 검사 제외
         # 2 보물: 강제 + 자연
         await pg.evaluate("window.__forceTre='crown'");g0=await pg.evaluate("__t.save().gold")
         s=await play(pg);print('tre forced',s,'name',await pg.evaluate("rName.textContent"),'gold+',await pg.evaluate("__t.save().gold")-g0,'rec',await pg.evaluate("JSON.stringify(__t.save().tre)"))
@@ -47,14 +43,8 @@ async def main():
         await pg.click('[data-open=equip]',force=True);await pg.wait_for_timeout(400);await pg.click('[data-gsel=r1]');await pg.wait_for_timeout(300);print('gear r1',await pg.evaluate("[...document.querySelectorAll('.eff')].pop().innerText"))
         await pg.click('[data-gsel=r5]');await pg.wait_for_timeout(300);print('gear r5',await pg.evaluate("[...document.querySelectorAll('.eff')].pop().innerText"));await pg.screenshot(path='/tmp/m_gear.png')
         await pg.evaluate("document.getElementById('sheet').classList.remove('on','show')");await pg.wait_for_timeout(300)
-        # 5 도전
-        await pg.click('#cMode');await pg.wait_for_timeout(300);await pg.click('[data-mact=chal]');await pg.wait_for_timeout(500)
-        print('chal on',await pg.evaluate("JSON.stringify(__w.CH)"));await pg.screenshot(path='/tmp/m_chal.png')
-        for i in range(3):
-            s=await play(pg);await pg.wait_for_timeout(2800);print(' round',i,s,'S now',await pg.evaluate('__t.S'),await pg.evaluate("JSON.stringify(__w.CH)"))
-        await pg.evaluate("__w.CH.t=0.2");await pg.wait_for_timeout(1500)
-        print('end',await pg.evaluate("document.getElementById('chEnd').classList.contains('on')"),await pg.evaluate("JSON.stringify(__t.save().chal)"));await pg.screenshot(path='/tmp/m_chend.png')
-        await pg.click('#chOk');await pg.reload();await pg.wait_for_timeout(700)
+        # 5 시간 제한 도전 — 4.19에서 삭제(사용자 요청)로 검사 제외
+        await pg.reload();await pg.wait_for_timeout(700)
         print('after reload',await pg.evaluate("JSON.stringify([__t.save().mode,__t.save().chal,Object.keys(__t.save().tre).length,__t.save().todaySp.d])"))
         print('errs',errs);await b.close()
 asyncio.run(main())

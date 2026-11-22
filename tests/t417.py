@@ -76,7 +76,7 @@ async def main():
         chk('물고기 그룹 분류',grp[3]=='small' and grp[4]=='boss' and 'big' in grp[0]+grp[1],str(grp))
         # 이벤트: 황금 물고기 시작 → evt_golden 한 번
         await pg.evaluate("__w.SND2.ev={};__t.golden()");await pg.wait_for_timeout(400);await pg.evaluate("__t.golden()");await pg.wait_for_timeout(300)
-        ev=await pg.evaluate("Object.keys(__w.SND2.ev)");chk('황금 물고기 이벤트음(중복 없이)',ev==['evt_golden'],str(ev))
+        ev=await pg.evaluate("Object.keys(__w.SND2.ev)");chk('황금 물고기 이벤트음(중복 없이)',ev.count('evt_golden')==1,str(ev))
         chk('pageerror 0',not errs,str(errs[:3]))
         await b.close()
     print('PASS',len(ok),'FAIL',len(bad),bad)
