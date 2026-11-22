@@ -1,7 +1,7 @@
 /* ================= 데이터 ================= */
 // 등급: 0 잡동사니 1 일반 2 고급 3 희귀 4 영웅 5 전설 6 신화 7 히든
 const RAR=[{n:'잡동사니',c:'#b8b0a2'},{n:'일반',c:'#9ccc65'},{n:'고급',c:'#4fc3f7'},{n:'희귀',c:'#a57fe0'},{n:'영웅',c:'#ff7a45'},{n:'전설',c:'#ffc531'},{n:'신화',c:'#ff5fae'},{n:'히든',c:'#3fe0d0'}];
-const GOLD_BASE=[10,30,60,120,260,650,1600,1300];
+const GOLD_BASE=[10,30,60,120,260,650,1600,2200]; // 4.14.3 히든 1300→2200 (조건·전투 난이도에 비해 신화보다 낮던 보상 보정)
 const LOCS=[
  {id:'pier',n:'여수 선착장',ic:'⚓',lv:1,cost:0,w:'sea',plat:'pier',d:'잔잔한 항구. 귀여운 바다 친구들이 많아요',pv:'linear-gradient(#8fd3f4,#2a9bb5)',meth:['basic','float','lure','bottom','cast'],wx:['clear','cloudy','rain'],amb:'gull'},
  {id:'rock',n:'돌산 갯바위',ic:'🪨',lv:4,cost:1500,w:'sea',plat:'rock',d:'파도가 부서지는 바위. 돔 종류의 성지',pv:'linear-gradient(#a4c8d8,#2f7d8f)',meth:['basic','float','lure','bottom','cast'],wx:['clear','cloudy','rain','storm'],amb:'wave'},
