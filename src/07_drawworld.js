@@ -46,6 +46,15 @@ function drawFar(g,P,t){const ph=clk().i,night=ph===3,L0=save.loc,dk=(a,b,c,d)=>
  else if(L0==='moon'){for(let i=0;i<3;i++){const x=W*(.15+i*.3),y=g.surf-30-i*16+Math.sin(t+i)*6;ctx.fillStyle='rgba(120,100,220,.55)';ctx.beginPath();ctx.ellipse(x,y,40-i*6,10,0,0,7);ctx.fill();ctx.fillStyle='#b8a8ff';ctx.beginPath();ctx.moveTo(x-10,y);ctx.lineTo(x,y-26+i*4);ctx.lineTo(x+10,y);ctx.fill()}}
  if(lightning>0){ctx.fillStyle=`rgba(255,255,255,${lightning*(save.set.calm?.15:.7)})`;ctx.fillRect(0,0,W,g.surf);const lx=W*.6;ctx.strokeStyle=`rgba(255,250,200,${lightning*2})`;ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(lx,g.top);ctx.lineTo(lx-20,g.top+(g.surf-g.top)*.3);ctx.lineTo(lx+10,g.top+(g.surf-g.top)*.5);ctx.lineTo(lx-14,g.surf-10);ctx.stroke()}}
 function drawSea(g,P,t){const L0=save.loc,w=curLoc().w,sea=ctx.createLinearGradient(0,g.surf,0,g.bed);sea.addColorStop(0,P.sea);sea.addColorStop(1,P.deep);ctx.fillStyle=sea;ctx.fillRect(0,g.surf,W,H-g.surf);
+ // 4.14.5 수중 배경 그림(itempx uw_<낚시터>): 수면~화면 아래를 비율 유지로 꽉 채움(가로 가운데·바닥 쪽 맞춤)
+ const uw=ipOk('uw_'+L0);
+ if(uw){const im=IPI['uw_'+L0],top=g.surf,hh=H-top,k=Math.max(W/im.naturalWidth,hh/im.naturalHeight),dw=im.naturalWidth*k,dh=im.naturalHeight*k,ph=clk().i;
+  ctx.save();ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';ctx.drawImage(im,(W-dw)/2,top+hh-dh,dw,dh);
+  ctx.fillStyle='rgba(0,22,40,.14)';ctx.fillRect(0,top,W,hh); // 물고기·찌·줄이 묻히지 않게 살짝 어둡게
+  if(ph===2){ctx.fillStyle='rgba(255,140,80,.13)';ctx.fillRect(0,top,W,hh)}
+  if(ph===3){ctx.fillStyle='rgba(8,16,52,.5)';ctx.fillRect(0,top,W,hh)}
+  const mk=Math.min(.35,rainAmt*.22+stormAmt*.15);if(mk>.01){ctx.fillStyle=`rgba(50,70,78,${mk})`;ctx.fillRect(0,top,W,hh)}
+  const sg=ctx.createLinearGradient(0,top,0,top+26);sg.addColorStop(0,P.sea);sg.addColorStop(1,P.sea+'00');ctx.fillStyle=sg;ctx.fillRect(0,top,W,26);ctx.restore()}
  const sp=sun(g);ctx.save();ctx.globalAlpha=(sp.moon?.35:.45)*(1-rainAmt*.7)*(w==='deep'?.4:1);for(let i=0;i<14;i++){const y=g.surf+4+i*i*1.6,ww=(30-i*1.4)*(1+Math.sin(t*3+i)*.3)*(L0==='moon'?2.2:1);ctx.fillStyle=sp.moon?'#fff6d0':clk().i===2?'#ffb070':'#fffbe0';ctx.fillRect(sp.x-ww/2+Math.sin(t*2+i)*6,y,ww,2)}ctx.restore();
  if(!LOWGFX&&w!=='deep'){ctx.fillStyle='rgba(255,255,255,.07)';for(let i=0;i<5;i++){const x=((i*W*.27+t*10)%(W+120))-60;ctx.beginPath();ctx.moveTo(x,g.surf);ctx.lineTo(x+40,g.surf);ctx.lineTo(x-30,g.bed);ctx.lineTo(x-90,g.bed);ctx.fill()}}
  ctx.fillStyle='rgba(10,30,50,.18)';shadows.forEach(s=>{ctx.beginPath();ctx.ellipse(s.x*W,g.surf+16+s.y*20,s.s,s.s*.3,0,0,7);ctx.fill()});
@@ -54,7 +63,8 @@ function drawSea(g,P,t){const L0=save.loc,w=curLoc().w,sea=ctx.createLinearGradi
  if(stormAmt>.3){ctx.fillStyle=`rgba(255,255,255,${stormAmt*.5})`;for(let i=0;i<8;i++){const x=(i*W/8+t*40)%W;ctx.beginPath();ctx.ellipse(x,g.surf+Math.sin(t*3+i)*4,18,4,0,0,7);ctx.fill()}}
  ctx.fillStyle='rgba(255,255,255,.85)';for(let i=0;i<12;i++){const a=Math.sin(t*3+i*7);if(a>.7)ctx.fillRect((i*97+t*14)%W,g.surf+4+(i*13)%30,6,1.5)}
  if(L0==='lake'){for(let i=0;i<5;i++){const x=W*(.45+i*.11)+Math.sin(t*.4+i)*6,y=g.surf+3;ctx.fillStyle='#4fae5f';ctx.beginPath();ctx.ellipse(x,y,16,5,0,.3,Math.PI*2-.1);ctx.lineTo(x,y);ctx.fill();if(i%2===0){ctx.fillStyle='#ffb0d0';ctx.beginPath();ctx.arc(x+4,y-5,4,0,7);ctx.fill();ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(x+4,y-6,2,0,7);ctx.fill()}}}
- // 바닥
+ // 바닥 (수중 배경 그림이 있으면 그림 속 바닥을 쓰고 코드 바닥·수초·산호는 건너뜀)
+ if(!uw){
  const bedCol={fresh:'#8a8a6a',reef:'#f2e2b0',ice:'#8aa0b0',deep:'#1a2030',moon:'#2a2a5a',sea:L0==='rock'?'#c9b48a':'#e6cf96'}[w]||'#e6cf96';
  ctx.fillStyle=isNight()&&w==='sea'?'#2a3550':bedCol;ctx.beginPath();ctx.moveTo(0,H);ctx.lineTo(0,g.bed);for(let x=0;x<=W;x+=20)ctx.lineTo(x,g.bed+Math.sin(x*.05)*4);ctx.lineTo(W,H);ctx.fill();
  if(w==='fresh'){for(let i=0;i<Math.ceil(W/24);i++){ctx.fillStyle=['#a8a080','#7a7a60','#c0b89a'][i%3];ctx.beginPath();ctx.ellipse(i*24+(i%3)*6,g.bed+2,8+(i%4)*3,5,0,0,7);ctx.fill()}for(let i=0;i<Math.ceil(W/90);i++){const x=40+i*90;ctx.strokeStyle='#4f8f4a';ctx.lineWidth=3;for(let k=-1;k<=1;k++){ctx.beginPath();ctx.moveTo(x+k*6,g.bed);ctx.quadraticCurveTo(x+k*8+Math.sin(t*1.3+i+k)*10,g.bed-30,x+k*10+Math.sin(t*1.3+i+k)*14,g.bed-55-(k+1)*8);ctx.stroke()}}}
@@ -65,6 +75,7 @@ function drawSea(g,P,t){const L0=save.loc,w=curLoc().w,sea=ctx.createLinearGradi
  else if(w==='moon'){for(let i=0;i<Math.ceil(W/80);i++){const x=30+i*80,a=.5+.5*Math.sin(t*1.5+i);ctx.fillStyle=`rgba(${i%2?'180,150,255':'120,230,255'},${.6+a*.3})`;ctx.beginPath();ctx.moveTo(x,g.bed);ctx.lineTo(x+7,g.bed-30-(i%3)*12);ctx.lineTo(x+14,g.bed);ctx.fill();ctx.fillStyle=`rgba(200,180,255,${a*.25})`;ctx.beginPath();ctx.arc(x+7,g.bed-16,22,0,7);ctx.fill()}}
  else{for(let i=0;i<Math.ceil(W/70);i++){const x=30+i*70+(i%3)*12,h=26+(i*37)%40;ctx.strokeStyle=i%2?'#3fa66b':'#2f8a5a';ctx.lineWidth=6;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(x,g.bed+4);ctx.quadraticCurveTo(x+Math.sin(t*1.5+i)*12,g.bed-h*.5,x+Math.sin(t*1.5+i+1)*16,g.bed-h);ctx.stroke()}
   for(let i=0;i<Math.ceil(W/160);i++){const x=90+i*160;ctx.fillStyle=i%2?'#ff8fa3':'#ffb26b';for(let k=0;k<3;k++){ctx.beginPath();ctx.arc(x+k*9-9,g.bed-8-(k%2)*8,7,0,7);ctx.fill()}}}
+ }
  if(!LOWGFX){ctx.strokeStyle='rgba(255,255,255,.5)';ctx.lineWidth=1;for(let i=0;i<16;i++){const y=g.bed-((t*30*(1+i%3)+i*53)%(g.bed-g.surf)),x=(i*83)%W+Math.sin(t*2+i)*4;ctx.beginPath();ctx.arc(x,y,1.5+i%3,0,7);ctx.stroke()}}}
 function drawBoat(g,t){const y=g.platY,e=g.edge,b=save.wear.boat;
  {const bk='c_boat_'+b,im=IPI[bk];if(ipOk(bk)){const dy={basic:.56,duck:.6,yacht:.8,whaleboat:.55}[b]||.55,asp=im.naturalHeight/im.naturalWidth;let w=e+60,h=w*asp;const need=(g.surf+16+g.bb-y)/(1-dy);if(h<need){h=need;w=h/asp}
