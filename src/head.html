@@ -198,7 +198,8 @@ body.streak8::after{box-shadow:inset 0 0 24px 4px rgba(255,120,210,.6)}
 body.busy #banners{opacity:0;transform:translateY(-14px)}
 body.busy #combo{top:var(--gb,170px)}
 body.resOn #banners,body.resOn #combo{opacity:0}
-body.busy #notice{opacity:0!important}
+/* 4.15.1 알림: 바쁠 때 즉시 숨김(깜빡임 원인) 대신 06c layoutTick에서 부드럽게 접음 */
+#notice{transform:translate(-50%,-14px);transition:transform .35s ease-out,opacity .35s ease-out}#notice.on{transform:translate(-50%,0)}
 #notice{max-width:calc(100vw - 24px);white-space:normal;text-align:center}
 #toast{max-width:calc(100vw - 16px);white-space:normal}
 .ic .icimg{width:46px;height:46px;margin:auto;object-fit:contain;display:block;filter:drop-shadow(0 1px 1px rgba(0,0,0,.25))}

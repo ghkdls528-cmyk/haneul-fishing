@@ -72,10 +72,14 @@ function drawLightScene(g,t,dk,ph,night){const hgt=g.surf-g.top;
  const sx=bx0+(bx1-bx0)*((t*.13)%1);if(Math.sin(t*2.3)>.92&&!LOWGFX&&Math.random()<.4)parts.push({x:sx,y:g.surf-4,vx:rnd(-15,15),vy:rnd(-60,-30),l:.5,t:0,c:'rgba(255,255,255,.9)',r:2,g:1})}
 function drawLightPlat(g,t,night){const y=g.platY,e=g.edge;
  const top=night?'#7a8296':'#e6e1d6',face=night?'#555d72':'#bdb7aa',face2=night?'#3a4256':'#8f897d';
- const fg=ctx.createLinearGradient(0,y+12,0,g.bed);fg.addColorStop(0,face);fg.addColorStop(1,face2);ctx.fillStyle=fg;ctx.fillRect(0,y+12,e,g.bed-y-12);
+ // 4.15.1 물속까지 꽉 찬 벽이 수중 배경을 가려서: 수면 조금 아래까지만 옆면, 그 아래는 기둥 3개
+ const sb=g.surf+14,fg=ctx.createLinearGradient(0,y+12,0,sb);fg.addColorStop(0,face);fg.addColorStop(1,face2);ctx.fillStyle=fg;ctx.fillRect(0,y+12,e,sb-y-12);
+ const pg=ctx.createLinearGradient(0,sb,0,g.bed);pg.addColorStop(0,face2);pg.addColorStop(1,night?'rgba(40,50,70,.55)':'rgba(110,120,120,.45)');ctx.fillStyle=pg;const pw=Math.max(14,e*.07);
+ for(const px of[e*.12,e*.5,e-pw-2]){ctx.fillRect(px,sb,pw,g.bed-sb);ctx.fillStyle='rgba(0,0,0,.12)';ctx.fillRect(px+pw-3,sb,3,g.bed-sb);ctx.fillStyle=pg}
+ ctx.fillStyle='rgba(0,0,0,.18)';ctx.fillRect(0,sb-3,e,3);
  ctx.fillStyle=top;ctx.fillRect(0,y,e,12);ctx.fillStyle=night?'#8a92a6':'#f4f0e8';ctx.fillRect(0,y,e,2.5);
- ctx.strokeStyle='rgba(0,0,0,.12)';ctx.lineWidth=1.5;for(let x=e*.22;x<e;x+=e*.26){ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x,y+12);ctx.stroke();ctx.beginPath();ctx.moveTo(x,y+12);ctx.lineTo(x,g.bed);ctx.stroke()}
- ctx.fillStyle='rgba(0,0,0,.08)';for(let i=0;i<18;i++){ctx.fillRect(srnd(i)*e,y+14+srnd(i+3)*(g.bed-y-20),2,2)}
+ ctx.strokeStyle='rgba(0,0,0,.12)';ctx.lineWidth=1.5;for(let x=e*.22;x<e;x+=e*.26){ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x,y+12);ctx.stroke();ctx.beginPath();ctx.moveTo(x,y+12);ctx.lineTo(x,sb);ctx.stroke()}
+ ctx.fillStyle='rgba(0,0,0,.08)';for(let i=0;i<18;i++){ctx.fillRect(srnd(i)*e,y+14+srnd(i+3)*(sb-y-20),2,2)}
  // 물때 라인
  ctx.fillStyle=night?'rgba(30,60,60,.5)':'rgba(70,110,90,.35)';ctx.fillRect(0,g.surf-2,e,10);
  // 난간

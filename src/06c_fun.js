@@ -28,8 +28,8 @@ $('luck').onclick=e=>{const b=e.target.closest('.lcard');if(!b||!luckOpen||luckO
 /* 4.5 화면 겹침 정리 */
 const BUSYS=['charge','bite','hook','fight','land'];
 function layoutTick(){const b=BUSYS.includes(S)||$('reveal').classList.contains('on'),rs=$('result').classList.contains('on');document.body.classList.toggle('busy',b);document.body.classList.toggle('resOn',rs&&!b);
- const bn=$('banners'),bb=bn.children.length&&!b&&!rs?bn.getBoundingClientRect().bottom:0,ch0=$('chHud'),cb=ch0&&ch0.style.display!=='none'?ch0.getBoundingClientRect().bottom:0,nt=Math.max(TOP+6,bb+6,cb+6),ne=$('notice');ne.style.top=nt+'px';
- if(b){$('combo').style.top='';return}
+ const bn=$('banners'),bb=bn.children.length&&!b&&!rs?bn.getBoundingClientRect().bottom:0,ch0=$('chHud'),cb=ch0&&ch0.style.display!=='none'?ch0.getBoundingClientRect().bottom:0,nt=Math.max(TOP+6,bb+6,cb+6),ne=$('notice');if(!ne.classList.contains('on'))ne.style.top=nt+'px';  // 보이는 동안엔 위치 고정(움찔 방지)
+ if(b){if(ne.classList.contains('on'))ne.classList.remove('on');$('combo').style.top='';return}  // 낚시 중이 되면 지금 알림은 부드럽게 접고 다시 띄우지 않음
  const nb=ne.classList.contains('on')?ne.getBoundingClientRect().bottom:0;$('combo').style.top=Math.max(TOP+40,bb+8,nb+8,cb+8)+'px'}
 setInterval(layoutTick,120);
 
