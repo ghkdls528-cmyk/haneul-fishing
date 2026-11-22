@@ -15,7 +15,7 @@ from PIL import Image
 from scipy import ndimage as nd
 B=os.path.dirname(os.path.dirname(os.path.abspath(__file__)));CP=os.path.join(B,'assets','charpx.json')
 MAP={'s03':'s_knit','s04':'s_denim','s05':'s_stripe','s06':'s_overall','s07':'s_check','s08':'s_track','s09':'s_sweat','s10':'s_sailor','s12':'s_rainpro','s13':'s_vest','s15':'s_summer','s16':'s_deep','s17':'s_exped'}
-SAD_FAIL={'s03','s07','s08','s17'}   # 4번째 줄 4칸이 실망한 표정인 세트만 새 fail 사용
+SAD_FAIL=set()   # 4번째 줄 4칸(fail)은 모든 세트가 '잡은 물고기 옆에 선' 그림이라 실패 장면에 안 맞음 → 전부 기존 fail 유지 (4.14.6)
 ROWS=[['idle','wink','walk','run','jump','sit','surprise','happy'],['prep','castready','cast','wait','hook','reel'],None,['fight','lift','success','fail',None,'rest']]
 ROD={'prep','castready','cast','wait','hook','reel','fight'}
 BG=14   # 이 밝기 이하 = 검은 배경
