@@ -15,7 +15,7 @@ function snapRisk(gs,f){const pull=fishPull(f),r=pull/gs.max;return r<.7?'안전
 
 /* ================= 역전(줄 끊기기 직전)·최종 제압 ================= */
 /* 4.13 위기 링: 줄어드는 링이 초록 원에 겹칠 때 탭 · 빗나가도 1번 더 기회 */
-const CL_PER=.95,CL_WIN=.15,CL_TRIES=2;   // 4.18 더 촉박하게(1.25초·0.17)
+const CL_PER=.9,CL_WIN=.13,CL_TRIES=2;   // 4.18 1.25→0.95 · 4.20 0.9초·판정 0.13   // 4.18 더 촉박하게(1.25초·0.17)
 function clNow(){return performance.now()/1000}
 function startClutch(){fg.clutchUsed=true;fg.clutch=1;fg.cT0=clNow()+.45;fg.cMiss=0;fg.cFb=null;slowmo=Math.max(slowmo,1.2);flash=.5;flashCol='255,60,60';shake=save.set.calm?0:6;SFX.warn();setTimeout(()=>SFX.warn(),150);vib([80,40,80]);bigText('위기!','줄어드는 링이 초록 원에 겹칠 때 탭!','#ff6a6a');hint()}
 function clPhase(){return (clNow()-fg.cT0)/CL_PER}

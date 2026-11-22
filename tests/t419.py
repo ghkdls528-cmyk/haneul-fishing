@@ -69,7 +69,7 @@ async def main():
         chk('수조 물고기 탭 → 교감(명성 +3)',(await pg.evaluate("__t.save().aq.rep||0"))-r0==3)
         await pg.evaluate("closeAq()");await pg.wait_for_timeout(300)
         # 6) 도감 형태 보기
-        await pg.evaluate("(()=>{__t.save().dex.mackerel=3})()");await pg.evaluate("openSheet('dex','all')");await pg.wait_for_timeout(400)
+        await pg.evaluate("(()=>{const s=__t.save();s.dex.mackerel=3;s.rec.mackerel=Object.assign(s.rec.mackerel||{locs:['pier'],last:null},{vars:Object.assign((s.rec.mackerel||{}).vars||{},{gold:1})})})()");await pg.evaluate("openSheet('dex','all')");await pg.wait_for_timeout(400)
         await pg.click(".cell[data-f='mackerel']");await pg.wait_for_timeout(400)
         nb=await pg.evaluate("document.querySelectorAll('[data-dv]').length");await pg.click("[data-dv='gold']");await pg.wait_for_timeout(500)
         chk('도감 형태 버튼 7개·황금 선택',nb==7 and await pg.evaluate("document.querySelector('[data-dv=gold]').classList.contains('on')"),str(nb))

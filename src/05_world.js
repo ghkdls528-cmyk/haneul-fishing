@@ -5,6 +5,7 @@ let bob={x:0,y:0,sx:0,tx:0,dip:0,dx:0,on:false},fish=null,fg={},app=null,lastRes
 const parts=[],crit=[],rings=[],drops=[],gulls=[],clouds=[],shadows=[],meteors=[],flakes=[];
 for(let i=0;i<5;i++)clouds.push({x:Math.random(),y:rnd(.08,.5),s:rnd(.6,1.3),v:rnd(.004,.012)});
 for(let i=0;i<3;i++)shadows.push({x:Math.random(),y:Math.random(),v:rnd(.02,.05)*(Math.random()<.5?-1:1),s:rnd(30,60)});
+const PET_ON=id=>!!(save.pets&&save.pets[id]);  // 4.20 산 펫은 데려가지 않아도 효과 적용
 function curLoc(){return LOCS.find(l=>l.id===save.loc)||LOCS[0]}
 const clk=()=>{if(curLoc().night)return{i:3,f:.5,c:3.5};const c=(gt/(DAY/4))%4,i=Math.floor(c);return{i,f:c-i,c}};
 const isNight=()=>clk().i===3;

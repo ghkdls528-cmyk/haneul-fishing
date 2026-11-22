@@ -32,9 +32,9 @@ function landBobber(){const g=G(),m=save.method;bob.on=true;bob.x=bob.tx;splash(
  if(m==='lure'){bob.y=g.surf+34}else if(m!=='basic'&&m!=='float'){bob.y=g.surf+6;bob.sink=1}
  const nearJump=jumpEv&&Math.abs(jumpEv.x-bob.x)<80,nearSchool=school&&Math.abs(school.x-bob.x)<90;
  if(nearJump)toast('명당이다! ✨',900);if(nearSchool)toast('물고기 떼 한가운데!',900);
- let catHelp=false;if(save.pet==='cat'&&Math.random()<.14){catHelp=true;setTimeout(()=>{SFX.meow();toast('냥! 물고기 발견 🐱',900)},500)}
+ let catHelp=false;if(PET_ON('cat')&&Math.random()<.14){catHelp=true;setTimeout(()=>{SFX.meow();toast('냥! 물고기 발견 🐱',900)},500)}
  fish=rollFish(nearJump||catHelp);
- let bt=rnd(2.2,5.2)*(fever>0?.5:1)*(save.bait==='krill'?.7:1)*(catHelp?.5:1)*(save.pet==='penguin'&&save.loc==='ice'?.8:1);if(nearSchool)bt*=.45;if(nearJump)bt*=.7;if(fish.r>=4)bt+=.8;if(m==='deep')bt+=curDepth/90;if(m==='lure')bt*=.8;if(CH)bt*=.55;if(bossPending)bt=2.6;
+ let bt=rnd(2.2,5.2)*(fever>0?.5:1)*(save.bait==='krill'?.7:1)*(catHelp?.5:1)*(PET_ON('penguin')&&save.loc==='ice'?.8:1);if(nearSchool)bt*=.45;if(nearJump)bt*=.7;if(fish.r>=4)bt+=.8;if(m==='deep')bt+=curDepth/90;if(m==='lure')bt*=.8;if(CH)bt*=.55;if(bossPending)bt=2.6;
  fg=Object.assign(fg,{bite:bt,cues:[],rare:fish.r>=4||fish.giant||!!fish.hid||!!fish.v,lprog:0,lastTw:-9});
  const bp=fish.bp,n=bp==='nibble'?3:bp==='slam'?1:2;for(let i=0;i<n;i++)fg.cues.push(bt*(bp==='slam'?.86:.62+i*.11));
  if(fish.r>0&&!['chest','clam'].includes(fish.k)){const dir=Math.random()<.5?1:-1,Lc=critL(fish),hp=hookPoint(g);app={f:fish,L:Lc,dir,x:dir>0?-Lc:W+Lc,sx:dir>0?-Lc:W+Lc,sy:m==='deep'?g.bed-30:clamp(hp.y+rnd(-60,60),g.surf+40,g.bed-30),seed:Math.random()*9}}else app=null;
@@ -59,7 +59,7 @@ function update(dt){
  if(goldenT>0){goldenT-=dt;if(goldenT<=0){goldenT=0;notice('황금 물고기들이 돌아갔어요')}}
  if(legendT>0){legendT-=dt;if(legendT<=0){legendT=0;notice('전설 어종 출현 시간 끝')}}
  if(wishT>0)wishT=Math.max(0,wishT-dt);
- if(S!=='title'){evT-=dt;if(evT<=0){evT=rnd(22,40);const r=Math.random(),gull=save.pet==='seagull';
+ if(S!=='title'){evT-=dt;if(evT<=0){evT=rnd(22,40);const r=Math.random(),gull=PET_ON('seagull');
   if(r<(gull?.3:.4))startJump();else if(r<(gull?.75:.65)&&L0.id!=='deep'){school={x:rnd(g.edge+60,W-40),t:0,life:13};notice(gull?'🕊️ 갈매기가 물고기 떼를 찾았어요! 화살표 쪽에 던져요':'🐟 물고기 떼가 몰려왔어요! 근처에 던져 보세요')}
   else if(r<.85&&goldenT<=0){goldenT=30;notice('🌟 황금 물고기 출현! 30초 동안 황금 변종 6배');SFX.reward(3)}
   else if(legendT<=0){legendT=40;notice('👑 전설 어종 출현 시간! 40초 동안 전설 3배');SFX.rareGet()}}}
@@ -176,13 +176,13 @@ function showResult(){const f=fish;if(!f)return;const isNew=!save.dex[f.id],prev
  if(f.r>0){combo++;save.st.maxCombo=Math.max(save.st.maxCombo,combo);mission('combo',combo)}else{comboBreak();save.st.junk++}
  let feverStart=false;if(f.r>0&&combo>0&&combo%5===0&&fever<=0){fever=20;feverStart=true}
  const cm=(f.r>0?comboMult():1)+(save.bob==='heart'?.05:0),fm=fever>0&&!feverStart?2:1,vm={mut:3,gold:5,albino:3}[f.v]||1;
- let pm=1+(save.pet?petLv(save.pet)*.02:0);if(save.pet==='otter')pm+=.12;if(save.pet==='penguin')pm+=L0==='ice'?.3:.05;if(save.wear.boat==='duck'&&curLoc().plat==='boat')pm+=.05;if(save.wear.boat==='whaleboat'&&curLoc().plat==='boat')pm+=.1;if(save.bob==='goldbob')pm+=.1;
+ let pm=1+PETS.reduce((a,x)=>a+(PET_ON(x.id)?petLv(x.id)*.02:0),0);if(PET_ON('otter'))pm+=.12;if(PET_ON('penguin'))pm+=L0==='ice'?.3:.05;if(save.wear.boat==='duck'&&curLoc().plat==='boat')pm+=.05;if(save.wear.boat==='whaleboat'&&curLoc().plat==='boat')pm+=.1;if(save.bob==='goldbob')pm+=.1;
  const base0=f.r===0?10:GOLD_BASE[f.r]*(.7+.6*(f.pct||0))*SIZEC[f.sc].m*vm*(1+.12*Math.log2(1+f.kgv))*pm;let gold=f.r===0?10:Math.round(base0*cm*fm);const comboBonus=f.r>0?Math.round(base0*(cm-1)):0;
  if(f.r>0&&weather==='fog')save.st.fog=(save.st.fog||0)+1;
  fg.clean=f.r>0&&!practice&&(fg.ftime||0)>=2.5&&(fg.sweet||0)/(fg.ftime||1)>=.6&&(fg.maxTen||0)<95;if(fg.clean){gold=Math.round(gold*1.5);save.st.clean=(save.st.clean||0)+1;save.cleanRun=(save.cleanRun||0)+1;if(save.cleanRun%3===0){gold+=500;setTimeout(()=>notice(`🎯 손맛 마스터 ${save.cleanRun}연속! +500🪙`),900)}}else if(f.r>0)save.cleanRun=0;
  if(f.r>0){const bh=bountyHit(f,gold);gold=bh.gold;fg.bounty=bh.extra||(bountyOf().id===f.id?1:0)}if(f.k==='chest')gold=Math.round(rnd(300,800)*(1+save.lv*.05));if(f.id==='clam')gold+=200;if(f.id==='bottle')gold+=100;
  const released=['turtle','sunfish','dolphin','orca','whale','manta','dwhale','dragon'].includes(f.id);if(released)gold+=100;
- const xp=Math.round((Math.max(1,f.r)*17+8)*(f.giant?2:1)*(f.v?1.5:1)*(fg.perfect?1.2:1)*(f.boss?3:1)+Math.min(40,f.size*.05));
+ const xp=Math.round((Math.max(1,f.r)*17+8)*(f.giant?2:1)*(f.v?1.5:1)*(fg.perfect?1.2:1)*(f.boss?3:1)*(f.r>=4?1+(f.r-3)*.8:1)+Math.min(40,f.size*.05)); // 4.20 영웅 ×1.8 · 전설 ×2.6 · 신화 ×3.4 · 히든 ×4.2
  save.dex[f.id]=(save.dex[f.id]||0)+1;if(rec)save.best[f.id]={cm:f.size,kg:f.kgv};save.count++;save.gold+=gold;
  const r0=save.rec[f.id]||(save.rec[f.id]={locs:[],vars:{},last:null});r0.last={d:today(),loc:L0,cm:f.size,kg:f.kgv};if(!r0.locs.includes(L0))r0.locs.push(L0);r0.vars[SIZEC[f.sc].n]=1;if(f.v)r0.vars[f.v]=1;
  if(f.r>=5&&f.r<7)save.st.legend++;if(f.r===6){save.st.myth++;save.mythLog.push({id:f.id,d:today(),kg:f.kgv,loc:L0})}if(f.hid&&HIDTITLE[f.id]&&!save.titles[HIDTITLE[f.id]]){save.titles[HIDTITLE[f.id]]=1;setTimeout(()=>notice(`🔮 히든 칭호 「${HIDTITLE[f.id]}」 획득!`),1500)}if(f.giant)save.st.giant++;if(f.v)save.st.variant++;if(f.hid&&isNew)save.st.hidden++;if(f.r>0)save.st.totalKg+=f.kgv;if(save.method!=='basic'&&f.r>0){save.st.meth++;mission('method',1)}
@@ -194,7 +194,7 @@ function showResult(){const f=fish;if(!f)return;const isNew=!save.dex[f.id],prev
   const bg=first?b.rew.gold:Math.round(b.rew.gold*.3);save.gold+=bg;gold+=bg;
   if(first){save.titles[b.rew.title]=1;const[cat,id]=b.rew.item;if(cat==='bob')save.bobs[id]=1;else save.cos[cat][id]=1;if(b.rew.deco)save.deco[b.rew.deco]=1;bossMsg=`🏆 칭호 「${b.rew.title}」 + 보상 장비 획득!`}SFX.bossWin()}
  if(tourn&&f.r>0){tourn.got.push(f.kgv);tourn.got.sort((a,b)=>b-a);tourn.got=tourn.got.slice(0,3);tourn.score=+tourn.got.reduce((a,b)=>a+b,0).toFixed(2)}
- if(save.pet==='otter'&&Math.random()<.25){const sg=Math.round(rnd(20,80));save.gold+=sg;setTimeout(()=>{SFX.shell();notice(`🦦 수달이 조개를 주워 왔어요! +${sg}`)},900)}
+ if(PET_ON('otter')&&Math.random()<.25){const sg=Math.round(rnd(20,80));save.gold+=sg;setTimeout(()=>{SFX.shell();notice(`🦦 수달이 조개를 주워 왔어요! +${sg}`)},900)}
  lastRes={f,isNew,rec:rec&&!isNew,gold,xp,feverStart,todayBest,released,bossMsg,clean:fg.clean,sweetPct:Math.round(100*(fg.sweet||0)/Math.max(.1,fg.ftime||0))};
  const beforePct=dexPct();addXp(xp);checkLocDone();const afterPct=dexPct();if(isNew&&[25,50,75,100].some(m=>beforePct<m&&afterPct>=m)){setTimeout(()=>{SFX.dexdone();notice(`📖 도감 ${afterPct}% 달성! 도감에서 보상 받기`)},1200)}
  if(f.r>0)comboUp(gold,comboBonus);save.comboBest=Math.max(save.comboBest||0,combo);
