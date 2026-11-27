@@ -36,11 +36,11 @@ async def main():
         await pg.evaluate("__t.fg.clutch=0;__t.fg.ten=40");await pg.evaluate('__bot(60000)');await reset(pg)
         # 2) 손 뗀 채 장력 바닥 → 0.6초 만에 놓침 / 감고 있으면 안 놓침
         await to_fight(pg);await pg.evaluate("__t.fg.ten=2;__t.fg.next=99");t0=await pg.evaluate('performance.now()')
-        for _ in range(100):
+        for _ in range(200):
             if await pg.evaluate('__t.S')!='fight':break
             await pg.evaluate("__t.fg.ten=Math.min(__t.fg.ten,2);__t.fg.next=99");await pg.wait_for_timeout(20)
         dt=(await pg.evaluate('performance.now()')-t0)/1000;st=await pg.evaluate('__t.S')
-        chk('손 뗀 채 장력 바닥 → 1초 안에 놓침',st=='fail' and dt<1.1,f'{st} {dt:.2f}s');await reset(pg)
+        chk('손 뗀 채 장력 바닥 → 결국 놓침(시작 유예 1.4초+0.6초, 4.23)',st=='fail' and 1.7<=dt<2.8,f'{st} {dt:.2f}s');await reset(pg)
         await to_fight(pg);await pg.mouse.move(200,500);await pg.mouse.down();await pg.evaluate("__t.fg.ten=2;__t.fg.next=99")
         for _ in range(40):
             await pg.evaluate("__t.fg.ten=Math.min(__t.fg.ten,2);__t.fg.next=99");await pg.wait_for_timeout(20)

@@ -1,7 +1,10 @@
 /* ================= 4.12 계절·강풍·불운 방지·희귀 입질·낚시터 이벤트·숨은 포인트·도감 수집 보상 ================= */
-/* ---------- 계절 (실제 날짜 기준) ---------- */
+/* ---------- 계절 (4.22부터 게임 속 날짜로 흐름: 한 계절 = 게임 6일, 게임 하루 = DAY초) ---------- */
 const SEASONS={spring:{n:'봄',ic:'🌸'},summer:{n:'여름',ic:'🌻'},autumn:{n:'가을',ic:'🍂'},winter:{n:'겨울',ic:'❄️'}};
-function seasonNow(){if(TEST&&window.__season)return window.__season;const m=new Date().getMonth()+1;return m>=3&&m<=5?'spring':m<=8&&m>=6?'summer':m>=9&&m<=11?'autumn':'winter'}
+const SEA_DAYS=6,SEA_ORD=['spring','summer','autumn','winter'];
+function seasonInfo(){const d=Math.floor(Math.max(0,gt)/DAY),k=Math.floor(d/SEA_DAYS);return{id:SEA_ORD[k%4],day:d%SEA_DAYS+1,year:Math.floor(k/4)+1,left:SEA_DAYS-d%SEA_DAYS}}
+function seasonNow(){if(TEST&&window.__season)return window.__season;return seasonInfo().id}
+const seaKey=()=>'g'+seasonInfo().year+'-'+seasonNow();  // 제철 기록 키: 게임 속 해·계절
 const SEAS={spring:['dodari','jjukkumi','ureok','bungeo','beodeul','jogi','hakgong','noraemi','gajami','crab','napjaru','pirami'],
  summer:['ojing','nongeo','mahi','bungjang','megi','jangeo','gomchi','nalchi','sunfish','jelly','butterfly','clown','ppaga'],
  autumn:['jeoneo','galchi','samchi','gamseong','mackerel','busiri','shrimp','eun','kkeokji','sancheon','gadara','trout'],
@@ -38,7 +41,7 @@ setInterval(()=>{if(S==='bite'&&fish&&fish.r>=4&&!fish._fx&&!fish.tre){fish._fx=
 const _sr1=showResult;showResult=function(){const f=fish;if(!f)return _sr1();const isNew=f.r>0&&!save.dex[f.id]&&!f.tre,L0=save.loc,ph=clk().i;_sr1();
  if(f.tre||practice)return;if(f.r>=3&&!f.boss)save.dry=0;else if(!f.boss)save.dry=(save.dry||0)+1;
  if(isNew)save.first[f.id]={d:today(),loc:L0,cm:f.size,w:weather,s:seasonNow()};
- if(f.r>0){const key=new Date().getFullYear()+'-'+seasonNow();const sc=save.seasonLog[key]||(save.seasonLog[key]={ids:{},done:0});if((SEAOF[f.id]||[]).includes(seasonNow()))sc.ids[f.id]=1}
+ if(f.r>0){const key=seaKey();const sc=save.seasonLog[key]||(save.seasonLog[key]={ids:{},done:0});if((SEAOF[f.id]||[]).includes(seasonNow()))sc.ids[f.id]=1}
  const sf=save.secFlag;if(L0==='valley'&&(weather==='rain'||weather==='storm'))sf.valleyRain=1;if(L0==='light'&&ph===3)sf.lightNight=(sf.lightNight||0)+1;if(L0==='lake'&&weather==='fog')sf.lakeFog=1;if(L0==='sea'&&f.r>=4)sf.seaHero=(sf.seaHero||0)+1;if(L0==='ice'&&weather==='snow')sf.iceSnow=1;if(L0==='deep'&&curDepth>=200)sf.deep200=1;
  const X=LOCX[L0];if(X&&!save.secret[L0]&&X.sec.ok(save)){save.secret[L0]=1;setTimeout(()=>{notice(`🗺️ 숨은 포인트 발견! ${curLoc().n} · 희귀 이상 +25%`);SFX.legend&&SFX.legend();flash=.6;flashCol='160,255,200'},1600)}
  if(EVT&&f.r>0){if(EVT.k==='surge'&&f.id===EVT.id){const b=Math.round(lastRes.gold*.5);save.gold+=b;lastRes.gold+=b;EVT.got++;$('rGold').textContent='+'+lastRes.gold.toLocaleString();$('rRec').textContent+=` · 🐟 떼 보너스 +${b}`}
@@ -82,7 +85,7 @@ function liveRates(){const ws=weights(false,false);let tot=0;const by=[0,0,0,0,0
 function infoHTML(){const L0=curLoc(),X=LOCX[L0.id]||{},sn=seasonNow(),S0=SEASONS[sn],wx=WXN[weather]||['☀️','맑음'],ph=PH[clk().i],rt=liveRates(),pm=pityMul();
  const seaHere=locSpecies(L0.id).filter(f=>(SEAOF[f.id]||[]).includes(sn));
  const wEff={rain:'비 좋아하는 물고기 ↑ (감성돔·볼락 등)',storm:'폭풍 전용 친구 · 비 좋아하는 물고기 ↑',fog:'희귀 이상 ×1.35',wind:'사냥꾼 물고기 ×1.6 · 찌가 흔들려요',snow:'빙하·겨울 친구 ↑',meteor:'별을 탭해 소원!',clear:'특별한 효과 없음',cloudy:'특별한 효과 없음'}[weather]||'';
- return`<div class="sum">${S0.ic} <b>${S0.n}</b> · ${wx[0]} ${wx[1]} · ${ph.ic} ${ph.n}<br><small>계절은 실제 날짜를 따라가요. 제철 물고기 ×${SEA_IN}, 제철 아닌 계절 물고기 ×${SEA_OFF} (사라지진 않아요)</small></div>
+ return`<div class="sum">${S0.ic} <b>${S0.n}</b> · ${wx[0]} ${wx[1]} · ${ph.ic} ${ph.n}<br><small>계절은 게임 속 날짜로 흘러요(한 계절 게임 ${SEA_DAYS}일 · 하루 ${Math.round(DAY/60)}분) — ${seasonInfo().year}년째 ${S0.n} ${seasonInfo().day}일째, 다음 계절까지 ${seasonInfo().left}일. 제철 물고기 ×${SEA_IN}, 제철 아닌 계절 물고기 ×${SEA_OFF} (사라지진 않아요)</small></div>
  <div class="sec">🌦️ 지금 날씨 효과</div><p>${wEff}</p>
  <div class="sec">🎲 지금 이곳 실제 출현 확률</div><div class="rtab">${[1,2,3,4,5,6,7,0].filter(r=>rt[r]>0.005).map(r=>`<div><span class="tag" style="background:${RAR[r].c}">${RAR[r].n}</span><b>${rt[r]<.1?rt[r].toFixed(2):rt[r].toFixed(1)}%</b></div>`).join('')}</div><p><small>미끼·낚시 방식·날씨·계절·숨은 포인트·불운 방지 보정이 모두 반영된 게임 내부 값이에요 (먼 거리 던지기·보물 낚시는 제외)</small></p>
  <div class="sec">🔮 불운 방지</div><p>희귀 이상을 못 낚은 지 <b>${save.dry||0}번</b>째 · 지금 희귀 이상 확률 ×${pm.toFixed(1)}<br><small>10번부터 조금씩 올라가 최대 ×3, 30번이 되면 다음 한 번은 희귀 이상이 꼭 나와요</small></p>
@@ -133,7 +136,7 @@ const _dd0=drawDeco;drawDeco=function(g,t){_dd0(g,t);if(!save.decoOn.trophy)retu
  ctx.beginPath();ctx.moveTo(-20,-62);ctx.lineTo(20,-62);ctx.quadraticCurveTo(18,-30,0,-26);ctx.quadraticCurveTo(-18,-30,-20,-62);ctx.closePath();ctx.fill();ctx.stroke();ctx.lineWidth=3;ctx.strokeStyle='#d8a020';ctx.beginPath();ctx.arc(-20,-50,8,Math.PI*.5,Math.PI*1.5);ctx.stroke();ctx.beginPath();ctx.arc(20,-50,8,-Math.PI*.5,Math.PI*.5);ctx.stroke();
  ctx.fillStyle='#fff';ctx.globalAlpha=.7;ctx.fillRect(-12,-58,4,18);ctx.restore()};
 /* 업적 */
-[['s1','계절','계절 친구','이번 계절 제철 물고기 5종',s=>{const k=new Date().getFullYear()+'-'+seasonNow();return Object.keys(((s.seasonLog||{})[k]||{}).ids||{}).length>=5},1500,'제철 미식가'],
+[['s1','계절','계절 친구','이번 계절 제철 물고기 5종',s=>{const k=seaKey();return Object.keys(((s.seasonLog||{})[k]||{}).ids||{}).length>=5},1500,'제철 미식가'],
  ['s2','탐험','숨은 포인트','숨은 포인트 1곳 발견',s=>Object.keys(s.secret||{}).length>=1,1000],['s3','탐험','비밀 지도 완성','숨은 포인트 10곳 모두',s=>LOCS.every(l=>(s.secret||{})[l.id]),15000,'비밀 지도 장인'],
  ['s4','이벤트','떼 사냥','물고기 떼·대물 경보 10번 만나기',s=>(s.st.evt||0)>=10,2000],['s5','이벤트','대물 장인','대물 경보에서 85% 이상 기록',s=>(s.st.bigEv||0)>=1,3000,'대물 장인']]
  .forEach(([id,c,n,d,ok,g,title])=>ACH.push({id,c,n,d,ok:sv=>{try{return!!ok(sv)}catch(e){return false}},g,title}));

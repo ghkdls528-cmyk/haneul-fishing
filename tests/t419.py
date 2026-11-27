@@ -17,10 +17,10 @@ async def main():
             if s=='fight':break
             await pg.wait_for_timeout(15)
         t0=await pg.evaluate("__t.fg.ten=2;__t.fg.next=99;performance.now()")
-        for _ in range(60):
+        for _ in range(250):
             if await pg.evaluate('__t.S')!='fight':break
             await pg.evaluate("__t.fg.ten=Math.min(__t.fg.ten,2);__t.fg.next=99");await pg.wait_for_timeout(15)
-        dt=(await pg.evaluate('performance.now()')-t0)/1000;chk('손 뗀 채 장력 바닥 → 0.5초 안에 놓침',await pg.evaluate('__t.S')=='fail' and dt<.55,f'{dt:.2f}s')
+        dt=(await pg.evaluate('performance.now()')-t0)/1000;chk('손 뗀 채 장력 바닥 → 시작 유예 1.4초 + 0.6초 뒤 놓침 (4.23)',await pg.evaluate('__t.S')=='fail' and 1.7<=dt<2.8,f'{dt:.2f}s')
         await pg.wait_for_timeout(600);await pg.mouse.click(200,500);await pg.wait_for_timeout(300)
         # 2) 업적·칭호
         n=await pg.evaluate("__w.ACH.length");t=await pg.evaluate("__w.ACH.filter(a=>a.title).length");chk('업적 250개 이상·칭호 붙은 업적 100개 이상',n>=250 and t>=100,f'{n} / {t}')

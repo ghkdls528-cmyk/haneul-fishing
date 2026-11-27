@@ -171,6 +171,19 @@ body.streak20::after{content:'';position:fixed;inset:0;pointer-events:none;z-ind
 @keyframes hue418{to{filter:hue-rotate(360deg)}}body.streak20 #combo b{animation:pulse418 .9s ease-in-out infinite}@keyframes pulse418{50%{transform:scale(1.12)}}
 .dv419{border:1.5px solid var(--line);cursor:pointer;min-height:32px;margin:2px;font-size:13px}.dv419.on{color:#fff}details.ach421{background:#fff;border:2px solid var(--line);border-radius:14px;margin:0 0 8px;padding:2px 8px}details.ach421 summary{min-height:44px;display:flex;align-items:center;justify-content:space-between;font-size:17px;cursor:pointer}
 #cMode,#chHud{display:none!important} /* 4.19 낚시 모드 삭제 */
+/* 4.22 상단 줄: 좁은 화면(폭 400 이하)에서도 경험치바가 보이게 */.lvbox{min-width:0;flex:1 1 0}.xpw{min-width:46px;overflow:hidden}.xpw small{overflow:hidden;text-overflow:ellipsis}#top .gold,#top .place,#setB{flex:none}#locName{max-width:64px;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:420px){#top{gap:5px;padding-left:6px;padding-right:6px}#top .pill{padding:3px 7px;font-size:15px}.lvbox{padding:0 7px 0 3px!important}.place{font-size:13px!important}#clk{letter-spacing:-2px}#locName{max-width:52px}}
+#hint,#notice,#toast,#banners .ban,.sum,.row p,#result,#sheet{word-break:keep-all;overflow-wrap:anywhere}
+/* 4.23 놓침 문구·상점 */#toast{left:0!important;right:0;margin:0 auto;width:max-content;max-width:calc(100vw - 24px)!important;white-space:normal;transform:translateY(-50%) scale(.6)!important}#toast.on{transform:translateY(-50%) scale(1)!important}#toast small{display:block;font-size:15px;margin-top:4px}#toast.fail423{top:21%;font-size:24px;background:rgba(40,28,18,.72);border:2.5px solid rgba(255,255,255,.28);border-radius:18px;padding:10px 18px}
+.goldShop{pointer-events:auto;cursor:pointer}.goldShop::after{content:"+";display:inline-grid;place-items:center;width:18px;height:18px;margin-left:2px;border-radius:50%;background:#ffb020;color:#fff;font-size:14px;line-height:1;border:2px solid var(--line)}
+@media (max-width:370px){.goldShop::after{display:none}}
+.ban.buf423{background:linear-gradient(90deg,#c8f7ff,#fff3b0)}
+.gacha{background:linear-gradient(#fff4d6,#ffe0a8);border:2.5px solid var(--line);border-radius:18px;padding:12px;text-align:center;margin:6px 0 10px;box-shadow:0 3px 0 var(--line)}
+.greel{font-size:56px;line-height:72px;height:72px;width:96px;margin:0 auto 6px;background:#fff;border:3px solid var(--line);border-radius:16px;box-shadow:inset 0 -6px 0 rgba(0,0,0,.08)}
+.greel.spin{animation:gspin .14s linear infinite}.greel.pop{animation:gpop .5s cubic-bezier(.3,1.8,.5,1)}
+@keyframes gspin{0%{transform:translateY(-3px)}50%{transform:translateY(3px)}100%{transform:translateY(-3px)}}@keyframes gpop{0%{transform:scale(.4)}100%{transform:scale(1)}}
+.gres{font-size:16px;min-height:24px;margin:4px 0 8px;display:flex;flex-wrap:wrap;gap:4px 10px;justify-content:center}.gres span{font-size:13px}.gres.l4,.gres.l3{color:#c45a00;font-weight:bold}.gres.l5{color:#e0207a;font-weight:bold;font-size:18px}
+.gbtns{display:flex;gap:8px;justify-content:center}.gbtns button{flex:1;max-width:170px;min-height:44px}.gp{font-size:11px;color:#8a6a4a;margin:6px 0 0}
 /* 4.21 대박 타임 */.ban.jp421b{background:linear-gradient(90deg,#ff5fae,#ffd23f,#7ff0e6);font-weight:bold}body.jp421::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:2;box-shadow:inset 0 0 30px 6px rgba(255,210,80,.55);animation:stk 1.2s ease-in-out infinite}#rGold{display:inline-block;transition:none}
 /* 4.18 */.evo418{background:linear-gradient(90deg,#ffd23f,#ff9a3c)!important;flex-basis:100%!important;width:100%;grid-column:1/-1}.gbtn button small{display:block;font-size:11px;white-space:normal;line-height:1.2}.gbtn button{white-space:normal}.evh418{font-size:13px;color:#7a5a3a;margin:4px 0;text-align:left}
 #rSkill{margin:2px 0 8px;text-align:left}#rSkill details{background:#fff8ea;border:2px solid var(--line);border-radius:14px}

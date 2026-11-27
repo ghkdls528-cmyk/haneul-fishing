@@ -11,11 +11,12 @@
 T414_BASE[1]=3;T414_BASE[2]=4;T414_BASE[3]=5.5;
 MT.forEach(m=>m.g=Math.round(m.g*1.3));WT.forEach(m=>m.g=Math.round(m.g*1.3));TRE.forEach(t=>t.val=Math.round(t.val*1.2));
 // ① ② 전투
-const _fi418=fight;fight=function(dt,g){_fi418(dt,g);if(S!=='fight'||!fish||fg.clutch>0||fg.final>0)return;
+const _fi418=fight;fight=function(dt,g){const t0=fg.ten;_fi418(dt,g);if(S!=='fight'||!fish||fg.clutch>0||fg.final>0){if(fg.clutch>0||fg.final>0)fg.freeT=T+.6;return}
+ if(!holding&&fg.ten<t0&&fg.ten<20)fg.ten+=(t0-fg.ten)*.5;   // 4.23 장력이 바닥 근처면 천천히 빠짐(반응할 시간)
  if(fish.r>=1&&fish.r<=3&&!fg.boss&&fg.surge<=0&&fg.charge<=0)fg.next-=dt*.5;                       // 저항 1.5배 자주
  // 손을 뗀 채 장력이 바닥이면 0.3초 만에 놓침(4.19: 0.6→0.3) — 점프·돌진·경고·얼음·약점처럼 '손 떼요' 구간과 그 직후 0.4초는 제외, 감고 있으면 세지 않음
  const free=fg.air>0||fg.warn>0||fg.roar>0||fg.diveT>0||fg.charge>0||fg.freeze>0||fg.weak>0||fg.ex>0;if(free)fg.freeT=T+.4;
- fg.slk=fg.ten<8&&!holding&&!free&&T>(fg.freeT||0)?(fg.slk||0)+dt:0;if(fg.slk>.3){fg.slk=0;fail('줄이 느슨해서 도망갔어요 · 장력을 놓지 마세요');return}
+ fg.slk=fg.ten<8&&!holding&&!free&&T>(fg.freeT||0)?(fg.slk||0)+dt:0;if(fg.slk>slkLim()){fg.slk=0;fail('줄이 느슨해서 도망갔어요 · 장력을 놓지 마세요');return}
  if(fg.ten>85&&T>(fg.redCd||0)&&fg.hp>3){fg.redCd=T+1.2;fg.clutchUsed=false;startClutch()}};
 const _ct418=clutchTap;clutchTap=function(){const w=fg.clutch;_ct418();if(w>0&&!(fg.clutch>0)&&S==='fight')fg.redCd=T+1.2};
 // ④ 계승

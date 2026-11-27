@@ -32,7 +32,7 @@ const _hud422=hud;hud=function(){_hud422();const bn_=$('banners');if(!bn_)return
 setInterval(()=>{if(JP.t>0)hud()},1000);
 const _sr422=showResult;showResult=function(){const f=fish;CHEST=null;_sr422();if(!f||!lastRes||lastRes.f!==f||practice)return;
  let add=0;
- if(JP.t>0&&f.r>0&&!f.tre){add=Math.round(lastRes.gold*.2);save.gold+=add;lastRes.gold+=add}
+ {const k=(JP.t>0?.2:0)+bufGold();if(k>0&&f.r>0&&!f.tre){add=Math.round(lastRes.gold*k);save.gold+=add;lastRes.gold+=add}}  // 대박 타임 +20% · 4.23 황금 손 버프 +30%
  if(f.k==='chest'&&CHEST){const C=CHEST;const msg=C.tier===2?'🎰 대박!! 황금상자 ×5':C.tier===1?'✨ 황금상자 ×2 + 보물':'💰 황금상자';
   setTimeout(()=>{bigText(msg,`🪙 ${lastRes.gold.toLocaleString()}`,C.tier===2?'#ff5fae':'#ffd23f');sparkle(W/2,H*.35,C.tier===2?120:60,['#ffd23f','#fff','#ff9ad8','#7ff0e6']);flash=C.tier?1:.5;flashCol='255,220,120';(C.tier===2?SFX.legend:SFX.rare)();vib(C.tier===2?[40,40,40,40,120]:[30,30,60])},450);
   if(C.tier>=1){const d=giveTre();
