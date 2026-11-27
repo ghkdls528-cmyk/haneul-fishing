@@ -7,7 +7,10 @@
 import base64,glob,io,json,os,re,shutil,sys
 import numpy as np
 from PIL import Image
-from scipy import ndimage as nd
+try:
+    from scipy import ndimage as nd
+except Exception:   # 이 PC에서 scipy DLL이 막힐 때
+    sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)));import ndlite as nd
 B=os.path.dirname(os.path.dirname(os.path.abspath(__file__)));CP=os.path.join(B,'assets','charpx.json')
 SET={'s01':'s_basic','s03':'s_knit','s04':'s_denim','s05':'s_stripe','s06':'s_overall','s07':'s_check','s08':'s_track','s09':'s_sweat','s10':'s_sailor','s12':'s_rainpro','s13':'s_vest','s15':'s_summer','s16':'s_deep','s17':'s_exped'}
 POSE={'failure':'fail','rest':'rest'}

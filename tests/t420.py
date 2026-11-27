@@ -23,7 +23,7 @@ async def main():
         await pg.evaluate("(()=>{const s=__t.save();s.pets.otter=1;s.pet=''})()")
         g=[]
         for own in [0,0,1]:
-            await pg.evaluate(f"__t.save().pets.otter={own};__w.setCombo(0);__t.save().todaySp.ids.mackerel=1;Math.__r=Math.random;Math.random=()=>.5")
+            await pg.evaluate(f"__t.save().pets.otter={own};__w.setCombo(0);if(__w.JP)__w.JP.t=0;__t.save().todaySp.ids.mackerel=1;Math.__r=Math.random;Math.random=()=>.5")
             for _ in range(4):
                 await pg.evaluate("__t.force('mackerel')");await pg.evaluate('__cast(600)');await pg.evaluate('__bot(60000)');await pg.wait_for_timeout(1300)
                 if await pg.evaluate("document.getElementById('result').classList.contains('on')"):break

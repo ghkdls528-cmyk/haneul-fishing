@@ -180,7 +180,7 @@ function showResult(){const f=fish;if(!f)return;const isNew=!save.dex[f.id],prev
  const base0=f.r===0?10:GOLD_BASE[f.r]*(.7+.6*(f.pct||0))*SIZEC[f.sc].m*vm*(1+.12*Math.log2(1+f.kgv))*pm;let gold=f.r===0?10:Math.round(base0*cm*fm);const comboBonus=f.r>0?Math.round(base0*(cm-1)):0;
  if(f.r>0&&weather==='fog')save.st.fog=(save.st.fog||0)+1;
  fg.clean=f.r>0&&!practice&&(fg.ftime||0)>=2.5&&(fg.sweet||0)/(fg.ftime||1)>=.6&&(fg.maxTen||0)<95;if(fg.clean){gold=Math.round(gold*1.5);save.st.clean=(save.st.clean||0)+1;save.cleanRun=(save.cleanRun||0)+1;if(save.cleanRun%3===0){gold+=500;setTimeout(()=>notice(`🎯 손맛 마스터 ${save.cleanRun}연속! +500🪙`),900)}}else if(f.r>0)save.cleanRun=0;
- if(f.r>0){const bh=bountyHit(f,gold);gold=bh.gold;fg.bounty=bh.extra||(bountyOf().id===f.id?1:0)}if(f.k==='chest')gold=Math.round(rnd(300,800)*(1+save.lv*.05));if(f.id==='clam')gold+=200;if(f.id==='bottle')gold+=100;
+ if(f.r>0){const bh=bountyHit(f,gold);gold=bh.gold;fg.bounty=bh.extra||(bountyOf().id===f.id?1:0)}if(f.k==='chest')gold=chestGold(gold);/* 4.21 영웅급 + 대박 뽑기 (06s) */if(f.id==='clam')gold+=200;if(f.id==='bottle')gold+=100;
  const released=['turtle','sunfish','dolphin','orca','whale','manta','dwhale','dragon'].includes(f.id);if(released)gold+=100;
  const xp=Math.round((Math.max(1,f.r)*17+8)*(f.giant?2:1)*(f.v?1.5:1)*(fg.perfect?1.2:1)*(f.boss?3:1)*(f.r>=4?1+(f.r-3)*.8:1)+Math.min(40,f.size*.05)); // 4.20 영웅 ×1.8 · 전설 ×2.6 · 신화 ×3.4 · 히든 ×4.2
  save.dex[f.id]=(save.dex[f.id]||0)+1;if(rec)save.best[f.id]={cm:f.size,kg:f.kgv};save.count++;save.gold+=gold;

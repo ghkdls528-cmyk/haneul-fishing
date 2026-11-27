@@ -73,7 +73,7 @@ const _drc0=drawResultCard;drawResultCard=function(t){if(lastRes&&lastRes.tre&&$
 const LOC_GM={pier:1,rock:1,valley:1.35,light:1.35,lake:1.4,sea:1,reef:1.7,ice:2.2,deep:1.35,moon:1.35};
 const _sr0=showResult;showResult=function(){if(fish&&fish.tre){treasureResult();return}const f=fish,isNew=f&&!save.dex[f.id]&&f.r>0;_sr0();if(!lastRes||lastRes.f!==f)return;
  // 4.9 다양성 보너스: 첫 발견 + 오늘 처음 잡은 종
- let extra=0;const tags=[];const lm=LOC_GM[save.loc]||1;if(lm>1&&f.r>0&&!f.boss){const b=Math.round(lastRes.gold*(lm-1));extra+=b;tags.push(`📍 지역 +${Math.round((lm-1)*100)}%`)}if(isNew&&!f.boss){const b=GOLD_BASE[f.r]*2;extra+=b;tags.push(`🆕 첫 발견 +${b}`)}
+ let extra=0;const tags=[];const lm=locGM();/* 4.21 열어 둔 낚시터 중 최고 보너스를 어디서나 */if(lm>1&&f.r>0&&!f.boss){const b=Math.round(lastRes.gold*(lm-1));extra+=b;tags.push(`📍 지역 +${Math.round((lm-1)*100)}%`)}if(isNew&&!f.boss){const b=GOLD_BASE[f.r]*2;extra+=b;tags.push(`🆕 첫 발견 +${b}`)}
  const td=today();if(save.todaySp.d!==td)save.todaySp={d:td,ids:{}};if(f.r>0&&!f.boss){if(!save.todaySp.ids[f.id]){save.todaySp.ids[f.id]=1;const b=Math.round(lastRes.gold*.3);extra+=b;if(!isNew)tags.push(`🌱 오늘 처음 +${b}`)}}
  if(extra){save.gold+=extra;lastRes.gold+=extra;$('rGold').textContent='+'+lastRes.gold.toLocaleString();$('rRec').textContent=[$('rRec').textContent,...tags].filter(Boolean).join(' · ');persist();hud()}
  if(CH)chalCatch(f)};
