@@ -34,9 +34,9 @@ function bfxNoise(){if(BFX.noise)return BFX.noise;const w=256,h=128,r=new Float3
 function bfxLoad(L){if(BFX.srcL===L&&BFX.src)return BFX.src;if(!ipOk('bg_'+L)||!ipOk('bgfx_'+L)||!BFXM[L])return null;
  try{const im=IPI['bg_'+L],w=im.naturalWidth,h=im.naturalHeight,c=document.createElement('canvas');c.width=w;c.height=h;const g=c.getContext('2d',{willReadFrequently:true});
   g.drawImage(im,0,0);const px=g.getImageData(0,0,w,h).data;g.clearRect(0,0,w,h);g.drawImage(IPI['bgfx_'+L],0,0,w,h);const mp=g.getImageData(0,0,w,h).data;
-  const rowL=new Float32Array(h);for(let y=0;y<h;y++){let s=0,n=0;for(let x=0;x<w;x+=4){const i=(y*w+x)*4;if(mp[i]>180&&mp[i+1]<30){s+=px[i]*.3+px[i+1]*.59+px[i+2]*.11;n++}}rowL[y]=n?s/n:0}
-  let last=180;for(let y=0;y<h;y++){if(rowL[y])last=rowL[y];else rowL[y]=last}
-  BFX.src={L,w,h,px,mp,rowL,ov:{},hz:(BFXM[L].hz||h*.6)};BFX.srcL=L;return BFX.src}catch(e){BFX.on=false;return null}}
+  const rowL=new Float32Array(h),rowC=new Float32Array(h*3);for(let y=0;y<h;y++){let s=0,n=0,cr=0,cg=0,cb=0;for(let x=0;x<w;x+=4){const i=(y*w+x)*4;if(mp[i]>180&&mp[i+1]<30){s+=px[i]*.3+px[i+1]*.59+px[i+2]*.11;cr+=px[i];cg+=px[i+1];cb+=px[i+2];n++}}rowL[y]=n?s/n:0;if(n){rowC[y*3]=cr/n;rowC[y*3+1]=cg/n;rowC[y*3+2]=cb/n}}
+  let last=180;for(let y=0;y<h;y++){if(rowL[y])last=rowL[y];else rowL[y]=last}{let a=[170,200,230];for(let y=0;y<h;y++){if(rowC[y*3]||rowC[y*3+1]||rowC[y*3+2])a=[rowC[y*3],rowC[y*3+1],rowC[y*3+2]];else{rowC[y*3]=a[0];rowC[y*3+1]=a[1];rowC[y*3+2]=a[2]}}}
+  BFX.src={L,w,h,px,mp,rowL,rowC,ov:{},hz:(BFXM[L].hz||h*.6)};BFX.srcL=L;return BFX.src}catch(e){BFX.on=false;return null}}
 function bfxOverlay(S0,sn){if(sn==='summer')return null;if(S0.ov[sn]!==undefined)return S0.ov[sn];const k='bgs_'+S0.L+'_'+sn;if(!ipOk(k)){S0.ov[sn]=null;return null}
  const c=document.createElement('canvas');c.width=S0.w;c.height=S0.h;const g=c.getContext('2d',{willReadFrequently:true});g.drawImage(IPI[k],0,0,S0.w,S0.h);return S0.ov[sn]=g.getImageData(0,0,S0.w,S0.h).data}
 function lerp3(a,b,t){return[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,a[2]+(b[2]-a[2])*t]}
@@ -49,7 +49,7 @@ function bfxStart(){const L=save.loc,S0=bfxLoad(L);if(!S0)return false;const key
  const lmT=T0?T0.lm:[1,1,1],lm=[lmT[0]*SE.lm[0]*W0.lv,lmT[1]*SE.lm[1]*W0.lv,lmT[2]*SE.lm[2]*W0.lv],sat=(T0?T0.sat:1)*SE.sat*W0.sat,con=SE.con||1;
  const night=tm==='night'||tm==='dusk',stars=tm==='night'?(W0.cover<.6?1:.25):tm==='dusk'?.35:0,moon=T0&&T0.moon&&W0.cover<.8?T0.moon:null;
  BFX.job={key,S0,out,row:0,o:{sky,cl,cs,sunP,lm,sat,con,stars,moon,night,ov,N,cover:W0.cover,fog:!!W0.fog,wet:!!W0.wet,fixed:!T0,tm,dark:tm==='fixed'?W0.lv:1}};return true}
-function bfxRows(budget){const J=BFX.job,S0=J.S0,o=J.o,{w,h,px,mp,rowL}=S0,d=J.out.data,N=o.N,hz=S0.hz,t0=performance.now();
+function bfxRows(budget){const J=BFX.job,S0=J.S0,o=J.o,{w,h,px,mp,rowL,rowC}=S0,d=J.out.data,N=o.N,hz=S0.hz,t0=performance.now();
  while(J.row<h&&performance.now()-t0<budget){const y=J.row++,ty=Math.min(1,y/Math.max(1,hz));
   let gr=null;if(o.sky){gr=ty<.55?lerp3(o.sky[0],o.sky[1],ty/.55):lerp3(o.sky[1],o.sky[2],(ty-.55)/.45)}
   const fogY=o.fog?.35+.45*Math.exp(-Math.abs(y-hz)/70):0,ny=((y/h*N.h*1.6)|0)%N.h;
@@ -64,7 +64,7 @@ function bfxRows(budget){const J=BFX.job,S0=J.S0,o=J.o,{w,h,px,mp,rowL}=S0,d=J.o
    let m=mp[i]/255;
    if(gr&&m>0){const rel=Math.max(.65,Math.min(1.5,L/Math.max(40,rowL[y]))),cg=mp[i+1]/255;
     const nv=N.r[ny*N.w+(((x/w*N.w*2.2)|0)%N.w)],pc=o.cover?Math.max(0,Math.min(1,(nv-(1-o.cover))*2.6)):0,cc=Math.max(cg,pc*(1-ty*.35));
-    let sr=gr[0]*(.82+.18*rel),sg=gr[1]*(.82+.18*rel),sb=gr[2]*(.82+.18*rel);
+    /* 4.26 하늘 칸을 평평한 색으로 바꾸지 않고 원래 무늬(먼 산·구름 결)를 살려 색만 입힘 → 경계의 톱니 자국 없앰 */const q0=Math.max(30,rowC[y*3]),q1=Math.max(30,rowC[y*3+1]),q2=Math.max(30,rowC[y*3+2]);let sr=Math.min(255,r*gr[0]/q0),sg=Math.min(255,g*gr[1]/q1),sb=Math.min(255,b*gr[2]/q2);
     const lit=Math.min(1,.55+.45*rel),cr=o.cs[0]+(o.cl[0]-o.cs[0])*lit,cgc=o.cs[1]+(o.cl[1]-o.cs[1])*lit,cb=o.cs[2]+(o.cl[2]-o.cs[2])*lit;
     sr+=(cr-sr)*cc;sg+=(cgc-sg)*cc;sb+=(cb-sb)*cc;
     if(o.sunP){const dx=x-o.sunP.x,dy=y-o.sunP.y,dd=Math.sqrt(dx*dx+dy*dy),R=o.sunP.r,gl=o.sunP.g*Math.exp(-dd/(R*5))*(1-cc*.7);
@@ -98,7 +98,7 @@ const _df417=drawFar;drawFar=function(g,P,t){const L0=save.loc;bfxTick();const C
 // 게임 바다: 노을 윤슬 기둥 · 폭풍 흰 포말 · 비 파문
 const _ds417=drawSea;drawSea=function(g,P,t){_ds417(g,P,t);if(!BFX.on)return;const tm=bfxTime(),sx=BFX.rect&&BFX.cur?null:null;
  if((tm==='golden'||tm==='pink'||tm==='morning')&&!(rainAmt>.4)){const sp=sun(g),col=tm==='pink'?'255,170,170':tm==='golden'?'255,205,110':'255,240,200';ctx.save();ctx.globalCompositeOperation='lighter';
-  for(let i=0;i<26;i++){const yy=g.surf+3+i*i*.9,ww=(46-i*1.4)*(1+.35*Math.sin(t*3+i*1.7));if(ww<2)break;ctx.fillStyle=`rgba(${col},${.5-i*.017})`;ctx.fillRect(sp.x-ww/2+Math.sin(t*2+i)*7,yy,ww,2)}ctx.restore()}
+  for(let i=0;i<22;i++){const f=.5+.5*Math.sin(t*(1.8+i*.31)+i*2.3),dx=(i-10.5)*13+Math.sin(t*1.1+i)*6,ww=(6+f*20)*(1-Math.abs(i-10.5)/13),yy=g.surf+1+(i*7%5)*1.8;if(ww<2)continue;ctx.fillStyle=`rgba(${col},${.25+f*.35})`;ctx.fillRect(sp.x+dx-ww/2,yy,ww,1.8)}/* 4.26 수면 띠에만 */ctx.restore()}
  if(stormAmt>.25){ctx.save();ctx.globalAlpha=stormAmt;ctx.fillStyle='rgba(20,30,45,.25)';ctx.fillRect(0,g.surf,W,30);ctx.fillStyle='rgba(255,255,255,.85)';
   for(let i=0;i<14;i++){const x=((i*W/14+t*(60+i*7))%(W+80))-40,yy=g.surf+4+(i%4)*6+Math.sin(t*4+i)*3,len=18+(i%3)*10;ctx.beginPath();ctx.ellipse(x,yy,len,3,-.05,0,7);ctx.fill();if(Math.sin(t*3+i*2)>.6){ctx.fillRect(x-len*.6,yy-7-Math.random()*6,3,3);ctx.fillRect(x+len*.3,yy-10-Math.random()*6,2,2)}}ctx.restore()}
  if(rainAmt>.3&&!LOWGFX){ctx.save();ctx.strokeStyle='rgba(255,255,255,.45)';ctx.lineWidth=1;for(let i=0;i<10;i++){const p=((t*.9+i*.37)%1),x=(i*131.7+Math.floor(t*.9+i*.37)*97)%W,yy=g.surf+6+(i%5)*7;ctx.globalAlpha=(1-p)*rainAmt;ctx.beginPath();ctx.ellipse(x,yy,3+p*14,1+p*2.5,0,0,7);ctx.stroke()}ctx.restore()}};

@@ -175,13 +175,13 @@ function drawAq(t,dt){if(!$('aq').classList.contains('on'))return;const c=$('aqc
  const sp=AQX.fish.filter(a=>a.f.r>=5);sp.forEach((a,i)=>{const px=w*(.25+i*.25);g.fillStyle='rgba(255,230,140,.18)';g.beginPath();g.moveTo(px-20,0);g.lineTo(px+20,0);g.lineTo(px+70,by);g.lineTo(px-70,by);g.fill();g.fillStyle='#d8c8a0';g.strokeStyle=OL;g.lineWidth=2;g.beginPath();g.roundRect(px-40,by-16,80,16,4);g.fill();g.stroke();g.font=`12px ${FONT}`;g.textAlign='center';g.fillStyle=OL;g.fillText(a.f.n,px,by-4);g.textAlign='left'});
  // 먹이
  AQX.food=AQX.food.filter(p=>{p.life-=dt;if(p.y<by-6){p.y+=p.vy*dt;p.x+=Math.sin(t*2+p.s)*.3}g.fillStyle='#e8904a';g.strokeStyle='#8a4a20';g.lineWidth=1;g.beginPath();g.arc(p.x,p.y,3,0,7);g.fill();g.stroke();return p.life>0&&!p.eaten});
- AQX.fish.forEach((a,i)=>{const special=a.f.r>=5;const L=Math.min(110,critL0(a.f)*.7);if(special){const k=sp.indexOf(a),px=w*(.25+k*.25);a.x+=(px+Math.sin(t*.6+i)*30-a.x)*dt*.8;a.y+=(by-60-L*.3+Math.sin(t+i)*8-a.y)*dt*.8;a.dir=Math.cos(t*.6+i)>0?1:-1}else{
+ AQX.fish.forEach((a,i)=>{const special=a.f.r>=5;const L=Math.min(110,aqL(a.f)*.7);if(special){const k=sp.indexOf(a),px=w*(.25+k*.25);a.x+=(px+Math.sin(t*.6+i)*30-a.x)*dt*.8;a.y+=(by-60-L*.3+Math.sin(t+i)*8-a.y)*dt*.8;a.dir=Math.cos(t*.6+i)>0?1:-1}else{
   const bot=AQ_BOTTOM.includes(a.f.k),small=L<45,spd=(bot?14:small?46:Math.max(18,40-L*.15))*(a.f.r>=3?1.1:1);a.vy=a.vy||0;
   // 목표 정하기: 먹이 > 무리 > 배회
   let tx=a.tx,ty=a.ty,boost=1;const fd=AQX.food.filter(p=>!p.eaten).sort((p,q)=>Math.hypot(p.x-a.x,p.y-a.y)-Math.hypot(q.x-a.x,q.y-a.y))[0];
   if(fd&&(!bot||fd.y>by-40)){tx=fd.x;ty=fd.y;boost=1.8;if(Math.hypot(fd.x-a.x,fd.y-a.y)<10+L*.25){fd.eaten=1;a.joy=1;for(let k=0;k<3;k++)AQX.bub=(AQX.bub||[]),AQX.bub.push({x:a.x,y:a.y-6,r:2+k,l:1})}}
   else{a.wt=(a.wt||0)-dt;if(a.tx==null||a.wt<=0||Math.hypot(a.tx-a.x,a.ty-a.y)<14){a.wt=rnd(2.5,6);a.tx=rnd(30,w-30);a.ty=bot?by-8-rnd(0,14):rnd(h*.15,by-40-L*.2)}
-   if(small){const mates=AQX.fish.filter(b=>b!==a&&b.f.r<5&&(b.id===a.id||Math.min(110,critL0(b.f)*.7)<45));if(mates.length){const mx=mates.reduce((s,b)=>s+b.x,0)/mates.length,my=mates.reduce((s,b)=>s+b.y,0)/mates.length;a.tx=a.tx*.6+mx*.4;a.ty=a.ty*.6+my*.4}}
+   if(small){const mates=AQX.fish.filter(b=>b!==a&&b.f.r<5&&(b.id===a.id||Math.min(110,aqL(b.f)*.7)<45));if(mates.length){const mx=mates.reduce((s,b)=>s+b.x,0)/mates.length,my=mates.reduce((s,b)=>s+b.y,0)/mates.length;a.tx=a.tx*.85+mx*.15;a.ty=a.ty*.85+my*.15/* 4.26 뭉침 줄임 */}}
    tx=a.tx;ty=a.ty}
   const dx=tx-a.x,dy=ty-a.y,d=Math.hypot(dx,dy)||1,ms=spd*boost;a.vx+=(dx/d*ms-a.vx)*Math.min(1,dt*1.4);a.vy+=(dy/d*ms*.6-a.vy)*Math.min(1,dt*1.4);
   // 서로 너무 붙지 않게

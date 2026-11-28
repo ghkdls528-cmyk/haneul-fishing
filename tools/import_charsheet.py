@@ -17,7 +17,7 @@ try:
 except Exception:   # 이 PC에서 scipy DLL이 막힐 때
     sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)));import ndlite as nd
 B=os.path.dirname(os.path.dirname(os.path.abspath(__file__)));CP=os.path.join(B,'assets','charpx.json')
-MAP={'s03':'s_knit','s04':'s_denim','s05':'s_stripe','s06':'s_overall','s07':'s_check','s08':'s_track','s09':'s_sweat','s10':'s_sailor','s12':'s_rainpro','s13':'s_vest','s15':'s_summer','s16':'s_deep','s17':'s_exped'}
+MAP={'s02':'s_hood','s03':'s_knit','s04':'s_denim','s05':'s_stripe','s06':'s_overall','s07':'s_check','s08':'s_track','s09':'s_sweat','s10':'s_sailor','s12':'s_rainpro','s13':'s_vest','s15':'s_summer','s16':'s_deep','s17':'s_exped'}
 SAD_FAIL=set()   # 4번째 줄 4칸(fail)은 모든 세트가 '잡은 물고기 옆에 선' 그림이라 실패 장면에 안 맞음 → 전부 기존 fail 유지 (4.14.6)
 ROWS=[['idle','wink','walk','run','jump','sit','surprise','happy'],['prep','castready','cast','wait','hook','reel'],None,['fight','lift','success','fail',None,'rest']]
 ROD={'prep','castready','cast','wait','hook','reel','fight'}
@@ -90,6 +90,7 @@ def frame(rgb,alpha,k,rod):
 def run(src,prev,apply):
     os.makedirs(prev,exist_ok=True);d=json.load(open(CP,encoding='utf-8'));new={}
     for code,sid in MAP.items():
+        if not os.path.exists(os.path.join(src,f'set_{code}.png')):continue   # 폴더에 있는 세트만
         rgb=np.array(Image.open(os.path.join(src,f'set_{code}.png')).convert('RGB'));m=rgb.max(2)>BG
         bs=bands(m);assert len(bs)==4,(code,bs)
         frames={};crops={}
@@ -118,7 +119,7 @@ def run(src,prev,apply):
             ax=x+3+f['ax']*im.width;dr.line((ax,y+262,ax,y+272),fill=(0,140,0),width=3)
         sheet.convert('RGB').save(os.path.join(prev,f'{sid}.png'));print(sid,'new',sorted(frames),'kept',[n for n in P if n not in frames])
     if apply:
-        bk=os.path.join(B,'assets','incoming','charpx.backup-before-4.14.4.json')
+        bk=os.path.join(B,'assets','incoming','charpx.backup-before-'+os.path.basename(os.path.normpath(src))+'.json')
         if not os.path.exists(bk):shutil.copy(CP,bk);print('백업',bk)
         d.update(new);json.dump(d,open(CP,'w',encoding='utf-8'));print('charpx.json 교체 완료',len(new),'세트')
 if __name__=='__main__':run(sys.argv[1],sys.argv[2],'--apply' in sys.argv)

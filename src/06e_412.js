@@ -64,7 +64,7 @@ const _sw0=setWeather;setWeather=function(w,ann){const prev=weather;_sw0(w,ann);
 const SPT=[];for(let i=0;i<14;i++)SPT.push({x:Math.random(),y:Math.random(),s:Math.random(),r:Math.random()*6});
 let rareShadowT=0;
 const _lf0=lifeFront;lifeFront=function(g,t){_lf0(g,t);drawClutch();const sn=seasonNow(),wd=weather==='wind'?1:0;
- if(!LOWGFX&&(sn==='spring'||sn==='autumn')&&rainAmt<.5&&['pier','rock','valley','light','lake'].includes(save.loc)){for(const p of SPT){const x=((p.x*W+t*(18+p.s*20)*(1+wd*3))%(W+40))-20,y=g.top+((p.y*(g.surf-g.top+60)+t*(16+p.s*12))%(g.surf-g.top+60));ctx.save();ctx.translate(x,y);ctx.rotate(t*(1+p.s)+p.r);ctx.fillStyle=sn==='spring'?'rgba(255,182,206,.9)':['rgba(232,120,50,.9)','rgba(214,160,40,.9)','rgba(190,70,40,.9)'][Math.floor(p.r)%3];ctx.beginPath();ctx.ellipse(0,0,4,2.2,0,0,7);ctx.fill();ctx.restore()}}
+ /* 4.26 계절 입자는 06x_v426.js에서 새로 그림 */
  if(wd&&!LOWGFX){ctx.strokeStyle='rgba(255,255,255,.45)';ctx.lineWidth=1.5;for(let i=0;i<8;i++){const x=((t*260+i*W*.31)%(W+200))-100,y=g.top+30+(i*53)%(g.surf-g.top-20);ctx.beginPath();ctx.moveTo(x,y);ctx.quadraticCurveTo(x+30,y-4,x+60,y);ctx.stroke()}}
  // 큰 물고기 그림자(입질 직전)
  if(S==='wait'&&fish&&fish.r>=4&&!fish.tre&&bob.on&&fg.bite&&T>fg.bite-1.6){const a=Math.min(1,(T-(fg.bite-1.6))/1.2);ctx.fillStyle=`rgba(10,20,40,${.35*a})`;ctx.beginPath();ctx.ellipse(bob.x-20+Math.sin(t*2)*14,g.surf+26,26+fish.r*4,7+fish.r,0,0,7);ctx.fill()}
