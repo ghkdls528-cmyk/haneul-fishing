@@ -22,7 +22,7 @@ function locGM(){let m=1;for(const l of LOCS)if(save.locs[l.id])m=Math.max(m,LOC
 // ④ 황금상자
 let CHEST=null;
 // 상자 ×2 이상: 보물 하나 확정(treDrop과 같은 기록 방식)
-function giveTre(){const t=pickTre();if(!t)return null;const R=save.tre[t.id],isNew=!R,r=R||(save.tre[t.id]={n:0,first:today(),loc:save.loc,lv:1});r.n++;r.lv=Math.min(5,(r.lv||1)+(isNew?0:1));save.st.tre=(save.st.tre||0)+1;return{t,isNew,lv:r.lv}}
+function giveTre(){const t=pickTre();if(!t)return null;const R=save.tre[t.id],isNew=!R,r=R||(save.tre[t.id]={n:0,first:today(),loc:save.loc,lv:1});r.n++;r.lv=(r.lv||1)+(isNew?0:1);save.st.tre=(save.st.tre||0)+1;return{t,isNew,lv:r.lv}}
 function chestGold(g){const r=Math.random(),lv=1+save.lv*.02;let k=1.3,tier=0;if(r<.05){k=5;tier=2}else if(r<.25){k=2;tier=1}CHEST={tier,k};return Math.round(Math.max(g,GOLD_BASE[4])*k*lv)}
 // ⑤ 대박 타임
 const JP={t:0,n:0};

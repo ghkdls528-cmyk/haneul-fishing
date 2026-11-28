@@ -34,7 +34,7 @@ function treasureResult(){const f=fish,t=TREI[f.tre],rec=save.tre[t.id],isNew=!r
  const R=save.tre[t.id]||(save.tre[t.id]={n:0,first:today(),loc:save.loc});R.n++;save.st.tre=(save.st.tre||0)+1;save.gold+=gold;mission('gold',gold);addXp(xp);
  lastRes={f,isNew,rec:false,gold,xp,feverStart:false,todayBest:false,released:false,bossMsg:'',tre:t};persist();hud();go('result');fillResult(lastRes,1,1);
  $('rName').textContent='💰 '+t.n;$('rCm').textContent='보물';$('rKg').textContent=fmtKg(t.kg);$('rDesc').textContent=t.d;
- $('rRec').textContent=isNew?'📜 새 보물 기록! 도감 › 보물에서 볼 수 있어요':`보물 기록 · ${R.n}번째`;
+ $('rRec').textContent=isNew?'💎 새 장비 보물! 장비 › 보물에서 장착해요':`보물 기록 · ${R.n}번째`;
  $('rBadges').innerHTML=`<span class="tag" style="background:${RAR[t.r].c}">${RAR[t.r].n} ${'★'.repeat(t.r)}</span><span class="tag" style="background:#ffd23f">💰 보물</span>`+(isNew?'<span class="tag">NEW 보물</span>':'')+(t.cond?`<span class="tag red">${TRE_COND[t.cond]} 한정</span>`:'');
  flash=t.r>=4?1:.4;flashCol='255,215,90';sparkle(W/2,H*.36,30+t.r*14,['#ffe066','#fff','#ffb020','#fff3a0']);if(SFX.tre)SFX.tre(t.r);else if(t.r>=4)SFX.legend&&SFX.legend();else SFX.coin();if(t.r>=4)notice(`💎 ${RAR[t.r].n} 보물 「${t.n}」 발견!`);
  resultLock=.6;reveal(f,()=>{$('result').classList.add('on');$('result').classList.toggle('lite',false)})}

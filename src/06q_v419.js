@@ -13,7 +13,7 @@ const _pb419=pickBgm;pickBgm=function(){const k=_pb419();return (goldenT>0||lege
 const _tv419=treVal;treVal=function(t){const R=save.tre[t.id];return _tv419(t)*(1+.1*Math.max(0,Math.min(5,(R&&R.lv)||1)-1))};
 function treDrop(f){if(!f||f.r<=0||f.tre||f.boss||practice)return null;let p=.035+(fever>0?.02:0)+fxv('scroll')/100+tfx('tre')/100;const am=fxv('amulet');if(am&&(weather==='rain'||weather==='storm'))p*=1+am/100;
  if(Math.random()>=p)return null;const t=pickTre();if(!t)return null;const R=save.tre[t.id],isNew=!R;
- const r=R||(save.tre[t.id]={n:0,first:today(),loc:save.loc,lv:1});r.n++;r.lv=Math.min(5,(r.lv||1)+(isNew?0:1));save.st.tre=(save.st.tre||0)+1;const g=Math.round(t.val*(1+save.lv*.02)*.5);save.gold+=g;
+ const r=R||(save.tre[t.id]={n:0,first:today(),loc:save.loc,lv:1});r.n++;r.lv=(r.lv||1)+(isNew?0:1);save.st.tre=(save.st.tre||0)+1;const g=Math.round(t.val*(1+save.lv*.02)*.5);save.gold+=g;
  return{t,isNew,lv:r.lv,g}}
 // ---------- ② 칭호 효과 ----------
 const TFXN={gold:'골드',xp:'경험치',rare:'희귀(★3 이상) 확률',bite:'입질 대기 단축',win:'챔질 여유',stab:'장력 안정',crit:'크리티컬',tre:'보물 발견'};

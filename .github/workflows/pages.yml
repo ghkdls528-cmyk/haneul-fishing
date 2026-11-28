@@ -25,6 +25,7 @@ jobs:
         run: |
           mkdir -p _site
           cp dist/haneul-fishing.html _site/index.html
+          cp docs/privacy.html _site/privacy.html
           touch _site/.nojekyll
       - uses: actions/upload-pages-artifact@v3
         with:

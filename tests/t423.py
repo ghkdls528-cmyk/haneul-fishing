@@ -48,7 +48,7 @@ async def main():
         chk('느슨 한계: 일반 0.6 · 희귀 0.85 · 영웅↑ 1.1',vals.get('1')==.6 and vals.get('3')==.85 and vals.get('4')==1.1 and vals.get('6')==1.1,str(vals))
         # 상점
         await pg.evaluate("__t.set('gold',1000000)");await pg.evaluate("openSheet('equip','shop')");await pg.wait_for_timeout(400)
-        tx=await pg.evaluate("document.getElementById('sbody').innerText");chk('장비 › 상점 탭(뽑기·버프·연마)',all(k in tx for k in ['행운 뽑기','희귀 물고기 향','황금 손','빠른 입질','대박 타임 즉시','보물 연마']),tx[:80].replace('\n',' '))
+        tx=await pg.evaluate("document.getElementById('sbody').innerText");chk('장비 › 상점 탭(뽑기·버프, 4.25 연마 삭제)',all(k in tx for k in ['행운 뽑기','희귀 물고기 향','황금 손','빠른 입질','대박 타임 즉시']),tx[:80].replace('\n',' '))
         await pg.screenshot(path=os.path.join(OUT,'t423_shop.png'))
         await pg.click("[data-shop='g1']");await pg.wait_for_timeout(1300)
         st=await pg.evaluate("[__t.save().st.gacha,document.querySelector('.gres').innerText]");chk('뽑기 1회: 횟수·결과 표시',st[0]==1 and len(st[1])>2,str(st))
@@ -69,8 +69,7 @@ async def main():
         sv=await pg.evaluate("JSON.parse(localStorage.getItem('haneul-fish-v4')).buf");chk('버프 저장·불러오기',bool(sv) and sv.get('gold',0)>200 and sv.get('rare',0)>200,json.dumps(sv))
         await pg.add_script_tag(content=BOT);await pg.click('#bStart');await pg.wait_for_timeout(400);await pg.evaluate("window.__noLuck=1;__w.setEvtNext(9999)")
         await pg.evaluate("(()=>{const s=__t.save();s.tre.coin={n:1,first:'2026-01-01',loc:'pier',lv:1};s.gold=1000000})()");await pg.evaluate("openSheet('equip','shop')");await pg.wait_for_timeout(300)
-        pc=await pg.evaluate("__w.polCost('coin',1)");await pg.click("[data-shop='p_coin']");await pg.wait_for_timeout(300)
-        chk('보물 연마: Lv1→2, 골드 차감',await pg.evaluate("__t.save().tre.coin.lv")==2 and await pg.evaluate("__t.save().gold")==1000000-pc,str(pc))
+        chk('4.25 보물 연마 없음',not await pg.evaluate("!!document.querySelector('[data-shop^=p_]')"))
         await pg.click("[data-shop='jp']");await pg.wait_for_timeout(300);chk('대박 타임 즉시 구매',await pg.evaluate("__w.JP.t")>25)
         await pg.evaluate("closeSheet()")
         await pg.wait_for_timeout(300);await pg.click('.goldShop');await pg.wait_for_timeout(400)

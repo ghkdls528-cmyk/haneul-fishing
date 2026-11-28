@@ -14,7 +14,7 @@ addEventListener('pageshow',e=>{if(e.persisted&&revNow()>myRev){staleTab=true;lo
 $('bStart').addEventListener('click',()=>{setTimeout(persist,400);try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}});
 
 // 앱 안 브라우저 안내
-(function(){const ua=navigator.userAgent||'',kakao=/KAKAOTALK/i.test(ua),inapp=kakao||/NAVER\(inapp|Instagram|FBAN|FBAV|Line\/|DaumApps|everytimeApp|; wv\)/i.test(ua);if(!inapp||TEST&&!window.__inappTest)return;
+(function(){const ua=navigator.userAgent||'',kakao=/KAKAOTALK/i.test(ua),inapp=kakao||/NAVER\(inapp|Instagram|FBAN|FBAV|Line\/|DaumApps|everytimeApp|; wv\)/i.test(ua);if(!inapp||/HaneulFishingApp/.test(ua)||window.Capacitor||TEST&&!window.__inappTest)return; /* 4.24 우리 안드로이드 앱(WebView)은 제외 */
  const t=$('title');if(!t)return;const d=document.createElement('div');d.id='inappNote';
  d.style.cssText='position:absolute;left:10px;right:10px;top:calc(env(safe-area-inset-top,0px) + 8px);z-index:5;background:#fff8ea;border:3px solid #3b2a1a;border-radius:14px;padding:8px 10px;font:14px Jua,sans-serif;color:#3b2a1a;text-align:center;line-height:1.4';
  d.innerHTML='⚠️ 앱 안 브라우저에서는 낚시 기록이 지워질 수 있어요.<br>'+(kakao?'<button id="inappOpen" type="button" style="margin-top:6px;min-height:44px;padding:6px 14px;border:2px solid #3b2a1a;border-radius:12px;background:#ffd23f;font:15px Jua,sans-serif">크롬·사파리로 열기</button>':'오른쪽 위 메뉴에서 <b>다른 브라우저로 열기</b>를 눌러 주세요.');

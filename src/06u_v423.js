@@ -3,7 +3,7 @@
     손을 놓아 장력이 바닥 근처(20 아래)면 절반 속도로 빠짐, 세는 동안 화면 가운데 '꾹! 줄이 느슨해요' 깜빡임 + 짧은 진동 (06o_gear418)
  ② 놓침 문구: 좁은 칸에 4줄로 갈라져 캐릭터 얼굴을 덮던 문구 → 화면 가운데 위쪽 반투명 상자, 큰 글씨(이유) + 작은 글씨(요령)
  ③ 장비 › 🛍️ 상점: 🎰 행운 뽑기(1회·10회, 동전~초대박 ×25·보물·버프·경험치) · 🧪 버프 5분(희귀 향·황금 손·빠른 입질) · 💫 대박 타임 즉시
-    · 💎 보물 연마(골드로 보물 레벨 업, 최대 5) — 버프 남은 시간은 save.buf(초)에 저장 */
+    · (4.25에서 💎 보물 연마 삭제) — 버프 남은 시간은 save.buf(초)에 저장 */
 // ① 느슨함
 function slkLim(){const r=fish?fish.r:1;return r>=4?1.1:r>=3?.85:.6}
 const _sf423=startFight;startFight=function(g){_sf423(g);fg.freeT=T+1.4;fg.slk=0};
@@ -51,9 +51,7 @@ function shopHTML(){const gc=gCost(),gold=save.gold,st=save.st;
  +`<div class="sec">🧪 버프 (5분 · 겹쳐 사면 시간 연장, 최대 60분)</div>`
  +Object.keys(BUF).map(id=>{const b=BUF[id],c=bCost(id),on=save.buf[id]>0;return`<div class="row ${on?'eq':''}" style="grid-template-columns:44px 1fr auto"><div class="ic">${b.ic}</div><div><b>${b.n}</b><p>${b.d}${on?` · 남은 시간 ${mmss(save.buf[id])}`:''}</p></div><button data-shop="b_${id}" ${gold<c?'disabled':''}>🪙${c.toLocaleString()}</button></div>`}).join('')
  +`<div class="row" style="grid-template-columns:44px 1fr auto"><div class="ic">💫</div><div><b>대박 타임 즉시</b><p>30초 동안 희귀 이상 ×1.5 · 골드 +20% (영웅 이상을 낚으면 연장)</p></div><button data-shop="jp" ${gold<jpCost()?'disabled':''}>🪙${jpCost().toLocaleString()}</button></div>`
- +`<div class="sec">💎 보물 연마 (골드로 보물 레벨 업 · 레벨마다 효과 +10%)</div>`
- +(owned.length?owned.map(t=>{const lv=save.tre[t.id].lv||1,c=polCost(t,lv);return`<div class="row" style="grid-template-columns:56px 1fr auto"><div class="ic"><canvas width="112" height="112" data-tre="${t.id}" style="width:44px;height:44px"></canvas></div><div><b>${t.n} <span style="color:${RAR[t.r].c}">${'★'.repeat(t.r)}</span> Lv${lv}</b><p>${treText(t)}</p></div>${lv>=5?'<button disabled>최대</button>':`<button data-shop="p_${t.id}" ${gold<c?'disabled':''}>Lv${lv+1} 🪙${c.toLocaleString()}</button>`}</div>`}).join(''):'<p style="text-align:center;color:#8a6a4a">아직 모은 보물이 없어요 · 뽑기나 낚시로 보물을 찾아요</p>')}
-function polCost(t,lv){return Math.round(t.val*(lv+1)*6/10)*10}
+}/* 4.25 보물 연마 삭제(보물은 같은 보물을 또 건지면 레벨 업, 제한 없음) */
 SH.equip.tabs.push(['shop','🛍️ 상점']);
 const _eh423=equipHTML;equipHTML=function(){return sheet.tab==='shop'?shopHTML():_eh423()};
 const _rs423=renderSheet;renderSheet=function(){_rs423();if(sheet.k==='equip'&&sheet.tab==='shop'&&typeof drawTreCells==='function')drawTreCells()};
@@ -71,8 +69,8 @@ $('sbody').addEventListener('click',e=>{const b=e.target.closest('button[data-sh
  if(a==='g1'||a==='g10'){doGacha(a==='g1'?1:10);return}
  if(a.startsWith('b_')){const id=a.slice(2),c=bCost(id);if(save.gold<c)return;save.gold-=c;addBuf(id);SFX.reward&&SFX.reward(2);toast(`${BUF[id].ic} ${BUF[id].n} · ${mmss(save.buf[id])}`,1000)}
  else if(a==='jp'){const c=jpCost();if(save.gold<c)return;save.gold-=c;JP.n++;JP.t=Math.min(90,JP.t+30);document.body.classList.add('jp421');SFX.legend();notice('💫 대박 타임 30초! 희귀 이상 1.5배 · 골드 +20%')}
- else if(a.startsWith('p_')){const t=TREI[a.slice(2)],R=save.tre[t.id];if(!R)return;const lv=R.lv||1,c=polCost(t,lv);if(lv>=5||save.gold<c)return;save.gold-=c;R.lv=lv+1;save.st.polish=(save.st.polish||0)+1;SFX.rare();sparkle(W/2,H*.5,40,['#7ff0e6','#fff','#ffd23f']);toast(`💎 ${t.n} Lv${R.lv}!`,1000)}
+
  persist();reShop()});
-if(TEST)Object.defineProperties(window.__w,{slkLim:{value:()=>slkLim()},fg:{get(){return fg}},gCost:{value:()=>gCost()},gachaRoll:{value:c=>gachaRoll(c)},doGacha:{value:n=>doGacha(n)},bCost:{value:id=>bCost(id)},polCost:{value:(id,lv)=>polCost(TREI[id],lv)},bufGold:{value:()=>bufGold()}});
+if(TEST)Object.defineProperties(window.__w,{slkLim:{value:()=>slkLim()},fg:{get(){return fg}},gCost:{value:()=>gCost()},gachaRoll:{value:c=>gachaRoll(c)},doGacha:{value:n=>doGacha(n)},bCost:{value:id=>bCost(id)},bufGold:{value:()=>bufGold()}});
 // 상단 골드를 누르면 바로 상점 (낚시 중에는 무시)
 {const gp=$('gold').closest('.pill');gp.classList.add('goldShop');gp.addEventListener('click',e=>{e.stopPropagation();if(['charge','cast','bite','hook','fight','land'].includes(S))return;openSheet('equip','shop')})}

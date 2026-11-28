@@ -28,7 +28,7 @@ async def main():
             else:await pg.wait_for_timeout(800)
         print('treasure mode 5 casts',cnt,'collected',await pg.evaluate("Object.keys(__t.save().tre)"))
         # 3 도감 보물 탭·필터
-        await pg.click('[data-open=dex]',force=True);await pg.wait_for_timeout(400);await pg.click('#sTabs [data-tab=tre]');await pg.wait_for_timeout(500);await pg.screenshot(path='/tmp/m_dextre.png')
+        await pg.click('[data-open=dex]',force=True);await pg.wait_for_timeout(400);print('dex tre tab (4.25 removed)',await pg.evaluate("!!document.querySelector('#sTabs [data-tab=tre]')"))
         await pg.click('#sTabs [data-tab=all]');await pg.wait_for_timeout(400)
         n_all=await pg.evaluate("document.querySelectorAll('#sbody .grid .cell').length")
         await pg.click('[data-dxr="3"]');await pg.wait_for_timeout(300);n_r3=await pg.evaluate("document.querySelectorAll('#sbody .grid .cell').length")
