@@ -61,7 +61,7 @@ async def main():
         await pg.evaluate("(()=>{const s=__t.save();s.buf={rare:0,gold:0,bite:0}})()");await pg.evaluate("__w.JP.t=0")
         await pg.evaluate("__t.set('gold',1000000)");await pg.evaluate("openSheet('equip','shop')");await pg.wait_for_timeout(300)
         bc=await pg.evaluate("__w.bCost('gold')");g0=await pg.evaluate("__t.save().gold");await pg.click("[data-shop='b_gold']");await pg.wait_for_timeout(300)
-        bf=await pg.evaluate("[__t.save().buf.gold,__t.save().gold,__w.bufGold()]");chk('버프 구매: 5분·골드 차감·효과 +30%',290<bf[0]<=300 and bf[1]==g0-bc and bf[2]==.3,str((bf,bc)))
+        bf=await pg.evaluate("[__t.save().buf.gold,__t.save().gold,__w.bufGold()]");chk('버프 구매: 10분(4.28)·골드 차감·효과 +30%',590<bf[0]<=600 and bf[1]==g0-bc and bf[2]==.3,str((bf,bc)))
         await pg.click("[data-shop='b_rare']");await pg.wait_for_timeout(300)
         await pg.evaluate("closeSheet()");await pg.wait_for_timeout(1300)
         ban=await pg.evaluate("(document.querySelector('.buf423')||{}).textContent||''");chk('버프 남은 시간 배너',('🪙' in ban) and ('🌟' in ban),ban)

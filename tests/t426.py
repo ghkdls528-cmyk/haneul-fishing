@@ -47,6 +47,13 @@ async def main():
         pos=await pg.evaluate("(()=>{const b=__w.AQ6.bub[__w.AQ6.bub.length-1],r=document.getElementById('aqc').getBoundingClientRect();return [r.left+b.x,r.top+b.y]})()")
         g2=await pg.evaluate("__t.save().gold");await pg.mouse.click(pos[0],pos[1]-4);await pg.wait_for_timeout(300)
         chk('방울을 손가락으로 눌러도 골드',await pg.evaluate("__t.save().gold")>g2)
+        # 4.28 신화·전설 4마리 이상 전시해도 전시대가 수조 안에
+        await pg.evaluate("(()=>{const s=__t.save();const hi=__t.F.filter(f=>f.r>=5&&f.k!=='chest'&&!f.boss).slice(0,6).map(f=>f.id);hi.forEach(id=>s.dex[id]={n:1});s.aq.slots=hi.concat(s.aq.slots).slice(0,15);__w.aqSync?__w.aqSync():0})()")
+        await pg.click("#aqClose");await pg.wait_for_timeout(300);await pg.click("#nav button[data-open='aq']");await pg.wait_for_timeout(4500)
+        inn=await pg.evaluate("(()=>{const c=document.getElementById('aqc'),w=c.width/devicePixelRatio;const sp=__w.aqFish().filter(a=>a.f.r>=5);return sp.map(a=>[a.f.r,Math.round(a.x),Math.round(w)])})()")
+        top4=sorted(inn,key=lambda x:-x[0])[:4]
+        chk('전설·신화 6마리 전시: 등급 높은 4마리가 수조 안 전시대에',len(inn)>=4 and all(10<x[1]<x[2]-10 for x in top4),str(inn))
+        await pg.screenshot(path=os.path.join(OUT,'t426_aq_myth.png'))
         cap=await pg.evaluate("(()=>{const s=__t.save();s.aq.pb={d:'',n:0};__w.aqPbLeft();s.aq.pb.n=40;return __w.aqPbLeft()})()");chk('보물 방울 하루 40개 제한',cap==0,str(cap))
         await pg.evaluate("__t.persist&&__t.persist()");await pg.reload();await pg.wait_for_timeout(700)
         pb=await pg.evaluate("JSON.parse(localStorage.getItem('haneul-fish-v4')).aq.pb");chk('방울 횟수 저장',pb and pb['n']==40,json.dumps(pb))
@@ -65,16 +72,23 @@ async def main():
             if await pg.evaluate("__t.S")=='fight':break
             await pg.wait_for_timeout(30)
         ai=await pg.evaluate("__w.ai&&__w.ai.k");chk('힘겨루기 시작하면 개체 성격',ai in ['hasty','calm','smart','tough','normal'],str(ai))
-        await pg.evaluate("(()=>{const f=__w.fg;f.next=.45;f.ten=50;f.freeT=1e9})()")
-        tell=None
-        for _ in range(12):
-            t=await pg.evaluate("__w.ai&&__w.ai.tell&&__w.ai.tell.k")
-            if t:tell=t
+        # 4.28: 화살표 신호 대신 '거품 톡!' — 거품이 뜨면 손가락으로 눌러 터뜨림
+        await pg.evaluate("(()=>{const f=__w.fg;f.freeT=0;f.ten=50;f.ai.nb=.05})()")
+        pos=None
+        for _ in range(30):
+            pos=await pg.evaluate("(()=>{const b=__w.ai&&__w.ai.bub;return b?[b.x,b.y]:null})()")
+            if pos:break
             await pg.wait_for_timeout(40)
-        await pg.wait_for_timeout(700)
-        rd=await pg.evaluate("__w.ai?__w.ai.reads:-1")
-        chk('저항 직전 신호(방향 꺾기 ↔ 또는 영리한 개체는 없음)',tell in ['turn','none'],str(tell))
-        chk('손 뗀 채 저항을 받으면 읽기 성공',rd>=1,str(rd))
+        chk('힘겨루기 중 반짝 거품이 뜸',pos is not None,str(pos))
+        await pg.screenshot(path=os.path.join(OUT,'t426_bubble.png'))
+        hp0=await pg.evaluate("__w.fg.hp")
+        if pos:
+            pos=await pg.evaluate("(()=>{const b=__w.ai.bub;return b?[b.x,b.y]:null})()") or pos
+            await pg.mouse.click(pos[0],pos[1])
+        await pg.wait_for_timeout(200)
+        rd=await pg.evaluate("__w.ai?__w.ai.reads:-1");hp1=await pg.evaluate("__w.fg.hp")
+        chk('거품을 톡 누르면 팡! (물고기 지침)',rd>=1 and hp1<hp0,f'{rd} {hp0}->{hp1}')
+        chk('화살표 신호 없음(4.28 삭제)',await pg.evaluate("!('tell' in (__w.ai||{}))"))
         await pg.screenshot(path=os.path.join(OUT,'t426_fight.png'))
         await pg.evaluate('__bot(90000)');await pg.wait_for_timeout(2500)
         chk('pageerror 0',not errs,str(errs[:3]))

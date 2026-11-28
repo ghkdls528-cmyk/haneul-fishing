@@ -8,7 +8,7 @@ async def main():
     async with async_playwright() as p:
         b=await p.chromium.launch(**LAUNCH);pg=await b.new_page(viewport={'width':390,'height':844},has_touch=True);errs=[];pg.on('pageerror',lambda e:errs.append(str(e)))
         await pg.goto(GAME+'?test');await pg.evaluate('localStorage.clear()');await pg.reload();await pg.add_script_tag(content=BOT);await pg.wait_for_timeout(600);await pg.click('#bStart');await pg.wait_for_timeout(600)
-        await pg.evaluate("window.__noLuck=1;__w.setEvtNext(9999);__t.setGear('r5','e5','l5');__t.set('lv',40);__t.set('set',Object.assign(__t.save().set,{reveal:'short'}))")
+        await pg.evaluate("window.__noLuck=1;window.__no427=1;__w.setEvtNext(9999);__t.setGear('r5','e5','l5');__t.set('lv',40);__t.set('set',Object.assign(__t.save().set,{reveal:'short'}))")
         # 보상: 영웅 이상 큰 물고기 골드·경험치
         legend=await pg.evaluate("(()=>{const f=__t.F.find(x=>x.r===5&&!x.boss&&!x.hid);const s=__t.save();s.locs[f.loc[0]]=1;__t.set('loc',f.loc[0]);return f.id})()")
         res=None

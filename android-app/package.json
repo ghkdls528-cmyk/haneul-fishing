@@ -2,7 +2,7 @@
   "name": "haneul-fishing-app",
   "version": "4.24.0",
   "private": true,
-  "description": "하늘이의 여수 낚시 안드로이드 앱 (Capacitor) — 게임은 상위 폴더 build.py가 만든 단일 HTML을 그대로 씀",
+  "description": "낚시왕 왕낚시 안드로이드 앱 (Capacitor) — 게임은 상위 폴더 build.py가 만든 단일 HTML을 그대로 씀",
   "scripts": {
     "copy-web": "python ../build.py && node -e \"const fs=require('fs');fs.mkdirSync('www',{recursive:true});fs.copyFileSync('../dist/haneul-fishing.html','www/index.html')\"",
     "sync": "npm run copy-web && npx cap sync android",

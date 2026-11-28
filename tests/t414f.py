@@ -23,7 +23,7 @@ async def main():
     async with async_playwright() as p:
         b=await p.chromium.launch(**LAUNCH);ctx=await b.new_context(viewport={'width':390,'height':844},has_touch=True,device_scale_factor=2);pg=await ctx.new_page();errs=[];pg.on('pageerror',lambda e:errs.append(str(e)))
         await pg.goto(GAME+'?test');await pg.evaluate('localStorage.clear()');await pg.reload();await pg.add_script_tag(content=BOT);await pg.wait_for_timeout(600);await pg.click('#bStart');await pg.wait_for_timeout(400)
-        await pg.evaluate("window.__noLuck=1;__w.setEvtNext(9999);__t.set('lv',40);__t.setGear('r5','e5','l5');__t.set('set',Object.assign(__t.save().set,{reveal:'short'}))")
+        await pg.evaluate("window.__noLuck=1;window.__no427=1;__w.setEvtNext(9999);__t.set('lv',40);__t.setGear('r5','e5','l5');__t.set('set',Object.assign(__t.save().set,{reveal:'short'}))")
         s0=await pg.evaluate('__t.save()');chk('새 필드 기본값',s0.get('totalPerfectCatches')==0)
         # 1) 판정 구간
         J=await pg.evaluate("[0,.04,.05,.13,.21,.22,.29,.30,.43,.44,.8].map(t=>__w.hookJudge(t))")

@@ -37,7 +37,7 @@ function bfxLoad(L){if(BFX.srcL===L&&BFX.src)return BFX.src;if(!ipOk('bg_'+L)||!
   const rowL=new Float32Array(h),rowC=new Float32Array(h*3);for(let y=0;y<h;y++){let s=0,n=0,cr=0,cg=0,cb=0;for(let x=0;x<w;x+=4){const i=(y*w+x)*4;if(mp[i]>180&&mp[i+1]<30){s+=px[i]*.3+px[i+1]*.59+px[i+2]*.11;cr+=px[i];cg+=px[i+1];cb+=px[i+2];n++}}rowL[y]=n?s/n:0;if(n){rowC[y*3]=cr/n;rowC[y*3+1]=cg/n;rowC[y*3+2]=cb/n}}
   let last=180;for(let y=0;y<h;y++){if(rowL[y])last=rowL[y];else rowL[y]=last}{let a=[170,200,230];for(let y=0;y<h;y++){if(rowC[y*3]||rowC[y*3+1]||rowC[y*3+2])a=[rowC[y*3],rowC[y*3+1],rowC[y*3+2]];else{rowC[y*3]=a[0];rowC[y*3+1]=a[1];rowC[y*3+2]=a[2]}}}
   BFX.src={L,w,h,px,mp,rowL,rowC,ov:{},hz:(BFXM[L].hz||h*.6)};BFX.srcL=L;return BFX.src}catch(e){BFX.on=false;return null}}
-function bfxOverlay(S0,sn){if(sn==='summer')return null;if(S0.ov[sn]!==undefined)return S0.ov[sn];const k='bgs_'+S0.L+'_'+sn;if(!ipOk(k)){S0.ov[sn]=null;return null}
+function bfxOverlay(S0,sn){if(sn==='summer')return null;if(S0.ov[sn]!==undefined)return S0.ov[sn];const k='bgs_'+S0.L+'_'+sn;if(!ipOk(k)){if(!IPX[k])S0.ov[sn]=null;else{const im=IPI[k];if(!im._ow){im._ow=1;im.addEventListener('load',()=>{BFX.key=''},{once:true})}}return null}
  const c=document.createElement('canvas');c.width=S0.w;c.height=S0.h;const g=c.getContext('2d',{willReadFrequently:true});g.drawImage(IPI[k],0,0,S0.w,S0.h);return S0.ov[sn]=g.getImageData(0,0,S0.w,S0.h).data}
 function lerp3(a,b,t){return[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,a[2]+(b[2]-a[2])*t]}
 function bfxStart(){const L=save.loc,S0=bfxLoad(L);if(!S0)return false;const key=bfxKey(),[,tm,wx,sn]=key.split('|');
@@ -83,7 +83,7 @@ function bfxRows(budget){const J=BFX.job,S0=J.S0,o=J.o,{w,h,px,mp,rowL,rowC}=S0,
   for(const[x,y]of lights){const k=((x*31+y*17)%10)/10;if(o.tm==='dusk'&&k>.6)continue;const col=k<.7?'255,210,120':'255,170,90';const gr2=g.createRadialGradient(x,y,0,x,y,9);gr2.addColorStop(0,`rgba(${col},.85)`);gr2.addColorStop(1,`rgba(${col},0)`);g.fillStyle=gr2;g.fillRect(x-9,y-9,18,18);g.fillStyle=`rgba(${col},1)`;g.fillRect(x-1,y-1,3,3)}g.restore()}
  BFX.prev=BFX.cur;BFX.cur={key:J.key,c,L:S0.L,night:o.night};BFX.fade=BFX.prev&&BFX.prev.L===S0.L?0:1;BFX.job=null;return true}
 function bfxComposeNow(){if(!bfxStart())return false;while(!bfxRows(1e9));BFX.key=bfxKey();BFX.fade=1;return true}
-function bfxTick(){if(!BFX.on)return;const key=bfxKey();if(BFX.job){bfxRows(6);return}if(key!==BFX.key){BFX.key=key;if(BFX.srcL&&BFX.srcL!==save.loc){BFX.src=null;BFX.srcL=''}bfxStart()}}
+function bfxTick(){if(!BFX.on)return;const key=bfxKey();if(BFX.job){bfxRows(6);return}if(key!==BFX.key){BFX.key=key;if(BFX.srcL&&BFX.srcL!==save.loc){BFX.src=null;BFX.srcL=''}if(!bfxStart())BFX.key=''/* 4.28 그림이 아직 안 풀렸으면 다음 프레임에 다시 */}}
 const _df417=drawFar;drawFar=function(g,P,t){const L0=save.loc;bfxTick();const C=BFX.cur;
  if(!BFX.on||!C||C.L!==L0||!ipOk('bg_'+L0))return _df417(g,P,t);
  const iw=C.c.width,ih=C.c.height,h0=g.surf+4,k=Math.max(W/iw,(h0-g.top+40)/ih),w=iw*k,h=ih*k,x=clamp(W/2-w*({moon:.7,light:.6}[L0]||.5),W-w,0),y=h0-h;BFX.rect={x,y,k};

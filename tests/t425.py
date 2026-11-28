@@ -45,14 +45,10 @@ async def main():
         await pg.click('.goldShop');await pg.wait_for_timeout(400)
         st=await pg.evaluate("document.getElementById('sbody').innerText");chk('상점: 보물 연마 없음·뽑기 있음',('보물 연마' not in st) and ('행운 뽑기' in st))
         await pg.click('#sClose');await pg.wait_for_timeout(500)
-        # 칭호 두 번째 줄
-        for w in [360,384,412,700]:
-            await pg.set_viewport_size({'width':w,'height':820});await pg.evaluate("__t.save().title='전설의 황금참돔 왕 사냥꾼';hud()");await pg.wait_for_timeout(300)
-            q=await pg.evaluate("(()=>{const g=s=>document.querySelector(s).getBoundingClientRect();const rb=g('#titleRib'),lv=g('.lvbox'),bar=g('.xpbar'),bn=document.querySelector('#banners').getBoundingClientRect();const el=document.getElementById('titleRib');return [Math.round(rb.top-lv.bottom),Math.round(bar.width),el.scrollWidth<=el.clientWidth+1,Math.round(bn.top-rb.bottom),el.textContent]})()")
-            chk(f'폭 {w}: 칭호가 경험치바 아래 줄에 전부 보임·배너와 안 겹침',-3<=q[0]<=3 and q[1]>=40 and q[2] and q[3]>=0,str(q))
-            if w==384:await pg.screenshot(path=os.path.join(OUT,'t425_top.png'),clip={'x':0,'y':0,'width':384,'height':170})
+        # 칭호: 4.28부터 레벨 칸 안 첫 줄 (자세한 검사는 t428)
+        await pg.evaluate("__t.save().title='전설의 황금참돔 왕 사냥꾼';hud()");await pg.wait_for_timeout(400)
+        q=await pg.evaluate("__w.top428()");chk('칭호가 레벨 칸 안에 표시(4.28)',q['inBox'] and q['txt']=='전설의 황금참돔 왕 사냥꾼',str(q))
         await pg.evaluate("__t.save().title='';hud()");await pg.wait_for_timeout(200)
-        chk('칭호 없으면 두 번째 줄 숨김',await pg.evaluate("getComputedStyle(document.getElementById('titleRib')).display==='none'&&!document.body.classList.contains('hasTitle')"))
         chk('pageerror 0',not errs,str(errs[:3]))
         await b.close()
     print('PASS',len(ok),'FAIL',len(bad),bad)

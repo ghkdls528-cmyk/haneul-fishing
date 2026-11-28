@@ -15,12 +15,12 @@ const _to423=toast;toast=function(t,ms){_to423(t,ms);const e=$('toast');e.classL
 const _fa423=fail;fail=function(m,k){toast.f423=1;try{return _fa423(m,k)}finally{toast.f423=0}};
 // ③ 상점
 const BUF={rare:{n:'희귀 물고기 향',ic:'🌟',d:'희귀(★3) 이상 확률 ×1.5',k:1.3},gold:{n:'황금 손',ic:'🪙',d:'낚을 때 골드 +30%',k:1},bite:{n:'빠른 입질',ic:'⚡',d:'입질 기다림 40% 짧게',k:.7}};
-const BUF_SEC=300;
+const BUF_SEC=600; // 4.28 5분→10분
 const r50=v=>Math.round(v/50)*50;
 const gCost=()=>r50(600+save.lv*160),bCost=id=>r50((1500+save.lv*250)*BUF[id].k),jpCost=()=>r50(2500+save.lv*300);
 function bufGold(){return(save.buf&&save.buf.gold>0)?.3:0}
 const mmss=s=>`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;
-function addBuf(id,sec=BUF_SEC){save.buf[id]=Math.min(3600,(save.buf[id]||0)+sec)}
+function addBuf(id,sec=BUF_SEC){save.buf[id]=Math.min(14400,(save.buf[id]||0)+sec)}
 // 버프 효과
 const _wt423=weights;weights=function(far,spot){const ws=_wt423(far,spot);return save.buf.rare>0?ws.map((w,i)=>FISH[i].r>=3?w*1.5:w):ws};
 const _wk423=waitTick;waitTick=function(dt,g){return _wk423(save.buf.bite>0?dt*1.6:dt,g)};
@@ -34,9 +34,9 @@ const GACHA=[ // [무게, 종류, 값]
  [41.6,'coin'],[16,'xp'],[14,'buf'],[12,'tre'],[10,'x',2],[4,'x',5],[2,'jp',3],[.4,'x',25]];
 function gachaRoll(cost){let r=Math.random()*GACHA.reduce((a,b)=>a+b[0],0),p=GACHA[GACHA.length-1];for(const q of GACHA){r-=q[0];if(r<=0){p=q;break}}
  const [,k,v]=p;
- if(k==='coin'){const g=Math.round(cost*rnd(.3,.8));save.gold+=g;return{ic:'🪙',t:`동전 ${g.toLocaleString()}`,lv:0,g}}
+ if(k==='coin'){const g=Math.round(cost*rnd(.4,.8));/* 4.28 환급 30~80% → 40~80% (천장과 합쳐 평균 약 1배) */save.gold+=g;return{ic:'🪙',t:`동전 ${g.toLocaleString()}`,lv:0,g}}
  if(k==='xp'){const x=Math.round(xpNeed(save.lv)*rnd(.15,.3));addXp(x);return{ic:'📘',t:`경험치 +${x.toLocaleString()}`,lv:0}}
- if(k==='buf'){const id=Object.keys(BUF)[Math.floor(Math.random()*3)];addBuf(id);return{ic:BUF[id].ic,t:`${BUF[id].n} 5분`,lv:1}}
+ if(k==='buf'){const id=Object.keys(BUF)[Math.floor(Math.random()*3)];addBuf(id,900);return{ic:BUF[id].ic,t:`${BUF[id].n} 15분`,lv:1}}
  if(k==='tre'){const d=giveTre();if(d)return{ic:'💎',t:`보물 「${d.t.n}」${d.isNew?' 첫 발견!':` Lv${d.lv}`}`,lv:2};const g=cost;save.gold+=g;return{ic:'🪙',t:`동전 ${g.toLocaleString()}`,lv:0,g}}
  if(k==='jp'){const g=cost*v;save.gold+=g;JP.n++;JP.t=Math.min(90,JP.t+30);return{ic:'💫',t:`대박 타임 30초 + 🪙${g.toLocaleString()}`,lv:3,g}}
  const g=cost*v;save.gold+=g;return{ic:v>=25?'🎰':v>=5?'💰':'🪙',t:`${v>=25?'초대박!! ':v>=5?'대박! ':''}×${v} · 🪙${g.toLocaleString()}`,lv:v>=25?5:v>=5?4:1,g,x:v}}
@@ -48,7 +48,7 @@ function shopHTML(){const gc=gCost(),gold=save.gold,st=save.st;
  +`<div class="sec">🎰 행운 뽑기 <small>(뽑은 횟수 ${st.gacha||0})</small></div><div class="gacha"><div id="gReel" class="greel">🎰</div>${last}
   <div class="gbtns"><button data-shop="g1" ${gold<gc||gBusy?'disabled':''}>1회 🪙${gc.toLocaleString()}</button><button data-shop="g10" ${gold<gc*9||gBusy?'disabled':''}>10회 🪙${(gc*9).toLocaleString()} <small>(1회 무료)</small></button></div>
   <p class="gp">동전 · 경험치 · 버프 · 보물 · ×2 · ×5 대박 · 💫대박 타임 · ×25 초대박</p></div>`
- +`<div class="sec">🧪 버프 (5분 · 겹쳐 사면 시간 연장, 최대 60분)</div>`
+ +`<div class="sec">🧪 버프 (10분 · 겹쳐 사면 시간 연장, 최대 4시간)</div>`
  +Object.keys(BUF).map(id=>{const b=BUF[id],c=bCost(id),on=save.buf[id]>0;return`<div class="row ${on?'eq':''}" style="grid-template-columns:44px 1fr auto"><div class="ic">${b.ic}</div><div><b>${b.n}</b><p>${b.d}${on?` · 남은 시간 ${mmss(save.buf[id])}`:''}</p></div><button data-shop="b_${id}" ${gold<c?'disabled':''}>🪙${c.toLocaleString()}</button></div>`}).join('')
  +`<div class="row" style="grid-template-columns:44px 1fr auto"><div class="ic">💫</div><div><b>대박 타임 즉시</b><p>30초 동안 희귀 이상 ×1.5 · 골드 +20% (영웅 이상을 낚으면 연장)</p></div><button data-shop="jp" ${gold<jpCost()?'disabled':''}>🪙${jpCost().toLocaleString()}</button></div>`
 }/* 4.25 보물 연마 삭제(보물은 같은 보물을 또 건지면 레벨 업, 제한 없음) */

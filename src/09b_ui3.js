@@ -1,4 +1,4 @@
-const OPX=__OUTFITPX__,OPI={};Object.keys(OPX).forEach(k=>{const i=new Image();i.src=OPX[k];OPI[k]=i});
+const OPX=__OUTFITPX__,OPI={};Object.keys(OPX).forEach(k=>{const i=new Image();if(OPX[k])i.src=OPX[k];OPI[k]=i});
 /* ================= 4.0 옷장(꾸미기) — 원본 캐릭터 + 의상 레이어 ================= */
 const WX={slot:'set',sel:null,anim:'idle',rot:0,spin:false,cmp:false,at:0,fx:0};
 const WTABS=[...WSLOT.filter(([k])=>k==='set'||k==='pre'),['rodskin','로드 스킨'],['reelskin','릴 스킨'],['boat','보트'],['deco','장식'],['pet','펫']];
@@ -65,7 +65,7 @@ let wDrag=null;$('wc').addEventListener('pointerdown',e=>{wDrag=e.clientX;WX.spi
 // 카드 미리보기: 부위에 맞춰 확대
 const WZOOM={hat:[.0,.0,1,.55],acc:[.0,.1,1,.7],shoes:[.0,.6,1,1],gloves:[.0,.3,1,.85],bag:[.0,.2,1,.8],bottom:[0,.45,1,1]};
 function drawWardIcons(){document.querySelectorAll('#wGrid canvas[data-wic]').forEach(c=>{const g=c.getContext('2d'),id=c.dataset.wic;let w=Object.assign({},save.ward.wear),z=null,pose='idle';
- if(WX.slot==='set'){const st=WSETS.find(x=>x.id===id),oi=OPI[id];if(oi&&oi.naturalWidth){g.clearRect(0,0,132,132);const bg=g.createRadialGradient(66,60,10,66,66,80);bg.addColorStop(0,'#3a4466');bg.addColorStop(1,'#1e2440');g.fillStyle=bg;g.fillRect(0,0,132,132);g.imageSmoothingEnabled=false;const k=Math.min(124/oi.naturalHeight,128/oi.naturalWidth);g.drawImage(oi,66-oi.naturalWidth*k/2,128-oi.naturalHeight*k,oi.naturalWidth*k,oi.naturalHeight*k);return}if(!st.w.costume)w.costume='none';Object.assign(w,st.w)}
+ if(WX.slot==='set'){const st=WSETS.find(x=>x.id===id),oi=OPI[id];if(oi&&oi.naturalWidth){g.clearRect(0,0,132,132);const bg=g.createRadialGradient(66,60,10,66,66,80);bg.addColorStop(0,'#3a4466');bg.addColorStop(1,'#1e2440');g.fillStyle=bg;g.fillRect(0,0,132,132);g.imageSmoothingEnabled=oi.naturalHeight>150;g.imageSmoothingQuality='high';const k=Math.min(124/oi.naturalHeight,128/oi.naturalWidth);g.drawImage(oi,66-oi.naturalWidth*k/2,128-oi.naturalHeight*k,oi.naturalWidth*k,oi.naturalHeight*k);return}if(!st.w.costume)w.costume='none';Object.assign(w,st.w)}
  else if(WX.slot==='pre'){const p=save.ward.pre[+id.slice(1)];if(!p){g.clearRect(0,0,132,132);g.fillStyle='#f2ece2';g.fillRect(0,0,132,132);g.fillStyle='#c8b8a0';g.font='44px sans-serif';g.textAlign='center';g.fillText('+',66,80);return}Object.assign(w,p)}
  else{w[WX.slot]=id;if(['top','bottom'].includes(WX.slot))w.costume='none';z=WZOOM[WX.slot];if(WX.slot==='bag')pose='walk'}
  g.clearRect(0,0,132,132);const bg=g.createRadialGradient(66,60,10,66,66,80);bg.addColorStop(0,'#fff');bg.addColorStop(1,'#e6f0f6');g.fillStyle=bg;g.fillRect(0,0,132,132);
@@ -91,7 +91,7 @@ function drawWard(t,dt){if(!$('ward').classList.contains('on'))return;const c=$(
   if(fxk>0){const u=1-fxk/.9;g.save();g.globalAlpha=Math.min(1,fxk*1.6);for(let i=0;i<14;i++){const a=i/14*Math.PI*2+u*3,rr=H0*(.15+u*.45);g.fillStyle=i%2?'#fff6b0':'#ffffff';star5(g,x+Math.cos(a)*rr,fy-H0*.5+Math.sin(a)*rr*.8,3+3*(1-u))}g.globalAlpha=fxk*.5;const gr=g.createRadialGradient(x,fy-H0*.5,0,x,fy-H0*.5,H0*.6);gr.addColorStop(0,'rgba(255,255,255,.9)');gr.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=gr;g.fillRect(x-H0,fy-H0*1.2,H0*2,H0*1.3);g.restore()}
   if(label){g.font=`15px ${FONT}`;g.textAlign='center';g.fillStyle='#7a4a2a';g.fillText(label,x,h*.08+10);g.textAlign='left'}};
  if(WX.cmp&&WX.sel){one(w*.27,save.ward.wear,'지금 착용',0);one(w*.73,wear,'미리보기 ✨',WX.fx)}else one(w*.5,wear,WX.sel?'미리보기':'',WX.fx)
- const oi=!WX.cmp&&WX.slot==='set'&&WX.sel&&OPI[WX.sel.id];if(oi&&oi.naturalWidth){const bh=Math.min(h*.5,130),k=bh/oi.naturalHeight,bw=oi.naturalWidth*k,bx=w-bw-14,by=h*.12;g.fillStyle='rgba(30,36,64,.85)';g.beginPath();g.roundRect(bx-6,by,bw+12,bh+22,10);g.fill();g.imageSmoothingEnabled=false;g.drawImage(oi,bx,by+4,bw,bh);g.imageSmoothingEnabled=true;g.fillStyle='#ffe9a8';g.font=`11px ${FONT}`;g.textAlign='center';g.fillText('세트 일러스트',bx+bw/2,by+bh+17);g.textAlign='left'}}
+ const oi=!WX.cmp&&WX.slot==='set'&&WX.sel&&OPI[WX.sel.id];if(oi&&oi.naturalWidth){const bh=Math.min(h*.5,130),k=bh/oi.naturalHeight,bw=oi.naturalWidth*k,bx=w-bw-14,by=h*.12;g.fillStyle='rgba(30,36,64,.85)';g.beginPath();g.roundRect(bx-6,by,bw+12,bh+22,10);g.fill();g.imageSmoothingEnabled=oi.naturalHeight>150;g.imageSmoothingQuality='high';g.drawImage(oi,bx,by+4,bw,bh);g.imageSmoothingEnabled=true;g.fillStyle='#ffe9a8';g.font=`11px ${FONT}`;g.textAlign='center';g.fillText('세트 일러스트',bx+bw/2,by+bh+17);g.textAlign='left'}}
 
 /* ================= 3.0 장비 상점(능력치 비교·강화·시험 낚시) ================= */
 const GLIST={rod:RODS,reel:REELS,line:LINES},GPRE={rod:'r',reel:'e',line:'l'};
@@ -172,10 +172,10 @@ function drawAq(t,dt){if(!$('aq').classList.contains('on'))return;const c=$('aqc
  if(D.bubbler){for(let i=0;i<10;i++){const y=by-((t*60+i*37)%(h*.85));g.strokeStyle='rgba(255,255,255,.7)';g.lineWidth=1.5;g.beginPath();g.arc(w*.45+Math.sin(t*3+i)*6,y,3+i%3,0,7);g.stroke()}}
  }
  // 특별 전시대
- const sp=AQX.fish.filter(a=>a.f.r>=5);sp.forEach((a,i)=>{const px=w*(.25+i*.25);g.fillStyle='rgba(255,230,140,.18)';g.beginPath();g.moveTo(px-20,0);g.lineTo(px+20,0);g.lineTo(px+70,by);g.lineTo(px-70,by);g.fill();g.fillStyle='#d8c8a0';g.strokeStyle=OL;g.lineWidth=2;g.beginPath();g.roundRect(px-40,by-16,80,16,4);g.fill();g.stroke();g.font=`12px ${FONT}`;g.textAlign='center';g.fillStyle=OL;g.fillText(a.f.n,px,by-4);g.textAlign='left'});
+ /* 4.28 특별 전시대: 등급 높은 순 최대 4마리를 수조 폭에 고르게(예전엔 25%씩 놓여 4번째부터 수조 밖 → 신화가 안 보임) */const sp=AQX.fish.filter(a=>a.f.r>=5).sort((p,q)=>q.f.r-p.f.r||(p.id<q.id?-1:1)).slice(0,4),spX=k=>w*(k+1)/(sp.length+1);sp.forEach((a,i)=>aqStand(g,a,spX(i),by,Math.min(84,w/(sp.length+1)*.92),t));
  // 먹이
  AQX.food=AQX.food.filter(p=>{p.life-=dt;if(p.y<by-6){p.y+=p.vy*dt;p.x+=Math.sin(t*2+p.s)*.3}g.fillStyle='#e8904a';g.strokeStyle='#8a4a20';g.lineWidth=1;g.beginPath();g.arc(p.x,p.y,3,0,7);g.fill();g.stroke();return p.life>0&&!p.eaten});
- AQX.fish.forEach((a,i)=>{const special=a.f.r>=5;const L=Math.min(110,aqL(a.f)*.7);if(special){const k=sp.indexOf(a),px=w*(.25+k*.25);a.x+=(px+Math.sin(t*.6+i)*30-a.x)*dt*.8;a.y+=(by-60-L*.3+Math.sin(t+i)*8-a.y)*dt*.8;a.dir=Math.cos(t*.6+i)>0?1:-1}else{
+ AQX.fish.forEach((a,i)=>{const special=sp.includes(a);const L=special?Math.min(110,aqL(a.f)*.7,w/(sp.length+1)*1.05):Math.min(110,aqL(a.f)*.7);if(special){const k=sp.indexOf(a),px=spX(k);a.x+=(px+Math.sin(t*.6+i)*30-a.x)*dt*.8;a.y+=(by-60-L*.3+Math.sin(t+i)*8-a.y)*dt*.8;a.dir=Math.cos(t*.6+i)>0?1:-1}else{
   const bot=AQ_BOTTOM.includes(a.f.k),small=L<45,spd=(bot?14:small?46:Math.max(18,40-L*.15))*(a.f.r>=3?1.1:1);a.vy=a.vy||0;
   // 목표 정하기: 먹이 > 무리 > 배회
   let tx=a.tx,ty=a.ty,boost=1;const fd=AQX.food.filter(p=>!p.eaten).sort((p,q)=>Math.hypot(p.x-a.x,p.y-a.y)-Math.hypot(q.x-a.x,q.y-a.y))[0];

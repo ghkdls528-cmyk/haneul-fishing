@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>하늘이의 여수 낚시</title>
+<title>낚시왕 왕낚시</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
 <style>
@@ -254,6 +254,21 @@ body.hasTitle #banners{top:calc(var(--top) + 70px)}
 .aq6sec{display:flex;justify-content:space-between;align-items:baseline;gap:6px;margin:10px 0 6px;padding:4px 10px;border-radius:12px;background:linear-gradient(90deg,var(--rc),rgba(255,255,255,0));border:2px solid var(--line);font-size:13px;flex-wrap:wrap}.aq6sec b{font-size:15px}.aq6sec em{font-style:normal;color:#a0400a;font-weight:bold}
 .aq6g{display:grid;grid-template-columns:repeat(auto-fill,minmax(98px,1fr));gap:6px}.aq6c{position:relative;display:flex;flex-direction:column;align-items:center;padding:4px 2px 6px;border:2.5px solid var(--rc);border-radius:14px;background:#fff;min-height:0;font-size:13px;line-height:1.2;box-shadow:0 2px 0 var(--line)}
 .aq6c canvas{width:84px;height:52px}.aq6c span{word-break:keep-all;text-align:center}.aq6c.on{background:linear-gradient(180deg,#fff7d0,#ffe9a8);box-shadow:0 0 0 2px var(--rc),0 2px 0 var(--line)}.aq6c i{position:absolute;top:3px;right:5px;font-style:normal;background:#3fbf6f;color:#fff;border-radius:50%;width:18px;height:18px;font-size:12px;line-height:18px}
+/* 4.28 상단 줄 통일 · 칭호는 레벨 칸 안 첫 줄 */#titleRib{display:none!important}body.hasTitle #banners{top:calc(var(--top) + 48px)}
+#top .pill,#setB{height:44px;border-width:2.5px;box-shadow:0 3px 0 var(--line);border-radius:16px}#top .pill{padding-top:0;padding-bottom:0}
+.lvbox{gap:6px;padding:0 9px 0 4px!important}.lvb{width:34px;height:34px;font-size:16px;letter-spacing:-.5px}.lvb.n3{font-size:12.5px;letter-spacing:-1px}
+.xpw.xp428{display:flex;flex-direction:column;justify-content:center;gap:3px;min-width:52px;overflow:visible}
+#xpTitle{position:relative;overflow:hidden;white-space:nowrap;font-size:13px;line-height:1.15;height:15px;color:#8a6a4a}#xpTitle.hasT{color:#7a3e10}#xpTitle span{display:inline-block}
+#xpTitle.marq span{animation:mq428 6s ease-in-out infinite alternate}@keyframes mq428{0%,15%{transform:translateX(0)}85%,100%{transform:translateX(var(--mq))}}
+#xpTitle.marq{-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent)}
+.xp428 .xpbar{position:relative;height:13px;border-radius:7px}.xp428 .xpbar i{border-radius:5px}#xpPct{position:absolute;inset:0;display:grid;place-items:center;font-size:9.5px;line-height:1;color:#3b2a1a;font-weight:normal;text-shadow:0 0 2px #fff,0 0 2px #fff}
+.xp428 #xpTxt{display:none!important}
+@media (max-width:420px){.lvbox{padding:0 7px 0 3px!important}.lvb{width:32px;height:32px}}
+@media (max-width:420px){#top{gap:4px}#top .gold{padding:0 8px!important;font-size:15px}.goldShop::after{width:15px;height:15px;font-size:12px;margin-left:1px}#clk{font-size:12px;letter-spacing:-3px}#top .place{padding:0 7px!important;gap:3px}#locName{max-width:48px}#setB{min-width:38px;width:38px}}
+@media (max-width:370px){#top .gold{padding:0 6px!important}}
+/* 4.28 뽑기 천장·행운 포인트 */.gp428{background:#fff;border:2.5px solid var(--line);border-radius:14px;padding:8px 10px;margin:8px 0;box-shadow:0 2px 0 var(--line)}.gprow{display:grid;grid-template-columns:auto auto 1fr;gap:6px;align-items:center;font-size:13px;margin:3px 0}.gprow b{font-size:13px;color:#7a3e10}.gprow small{color:#8a6a4a}
+.gpbar{height:10px;border:2px solid var(--line);border-radius:6px;background:#efe4cc;overflow:hidden}.gpbar i{display:block;height:100%}
+.gpex{display:grid;grid-template-columns:repeat(auto-fill,minmax(98px,1fr));gap:5px;margin-top:6px}.gpex button{display:flex;flex-direction:column;align-items:center;gap:1px;padding:4px 4px;min-height:48px;font-size:12px;line-height:1.2;word-break:keep-all}.gpex button small{color:#a0522d}
 </style>
 </head>
 <body>
@@ -291,7 +306,7 @@ body.hasTitle #banners{top:calc(var(--top) + 70px)}
 
 <div class="ov on" id="title"><div class="in">
   <img id="titleImg" alt="노을 진 선착장에서 낚시하는 하늘이">
-  <h1>하늘이의<br>여수 낚시</h1>
+  <h1>낚시왕<br>왕낚시</h1>
   <p id="tSub">3.0 · 옷 30벌 · 장비 18종 · 수족관 · 바다 친구 134종</p>
   <button class="big" id="bStart">낚시 시작!</button>
   <div class="how">
