@@ -39,8 +39,8 @@ const _sr422=showResult;showResult=function(){const f=fish;CHEST=null;_sr422();i
    if(d)$('rRec').textContent=[$('rRec').textContent,`💎 상자 속 보물 「${d.t.n}」${d.isNew?' 첫 발견!':` Lv${d.lv}`}`].filter(Boolean).join(' · ')}}
  if(f.r>=4&&!f.tre&&!f.boss){JP.n++;JP.t=Math.min(90,JP.t+30);setTimeout(()=>{notice(JP.n>1?`💫 대박 타임 연장! ${Math.ceil(JP.t)}초 (×${JP.n})`:'💫 대박 타임 30초! 희귀 이상 1.5배 · 골드 +20%');hud()},1000)}
  // 골드 숫자 올라가기
- const el=$('rGold'),to=lastRes.gold,d0=performance.now(),dur=Math.min(1400,350+Math.log10(Math.max(10,to))*250);let lastTick=0;
- const step=()=>{const k=Math.min(1,(performance.now()-d0)/dur),v=Math.round(to*(1-Math.pow(1-k,3)));el.textContent='+'+v.toLocaleString();el.style.transform=`scale(${1+.25*Math.sin(k*Math.PI)})`;
+ const el=$('rGold'),LR=lastRes,to=lastRes.gold,d0=performance.now(),dur=Math.min(1400,350+Math.log10(Math.max(10,to))*250);let lastTick=0;
+ const step=()=>{const k=Math.min(1,(performance.now()-d0)/dur),v=Math.round(LR.gold*(1-Math.pow(1-k,3)))/* 4.27 뒤에 붙는 보너스(강적 보상 등)까지 반영 */;el.textContent='+'+v.toLocaleString();el.style.transform=`scale(${1+.25*Math.sin(k*Math.PI)})`;
   if(k-lastTick>.12&&k<1){lastTick=k;if(AC&&SND.bus)sp('sfx_04_gold',{gap:.08,vol:.35,rate:1+k*.5})}if(k<1)requestAnimationFrame(step);else el.style.transform=''};
  requestAnimationFrame(step);persist();hud()};
 // 보물 지도 효과 문구(낚시 모드 삭제에 맞춤)
